@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-wine: #722F37;
+  --color-wine-dark: #4A1A20;
+  --color-wine-deep: #2A0D12;
+  --color-gold: #C9A84C;
+  --color-gold-light: #E8C97A;
+  --color-ivory: #FAF6F0;
+  --color-blush: #E8D5C4;
+  --color-charcoal: #1A1010;
+  --color-text-dark: #2C1A1A;
+  --color-text-mid: #5C3A3A;
+
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Poppins", system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+  
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-ivory);
+    color: var(--color-text-dark);
+    overflow-x: hidden;
+  }
+}
+
+/* Custom styles supporting the aesthetic */
+.premium-gradient-overlay {
+  background: linear-gradient(160deg, rgba(42,13,18,0.85) 0%, rgba(74,26,32,0.8) 100%);
+}
+
+.text-stroke-gold {
+  -webkit-text-stroke: 1px var(--color-gold);
+}
+
+@keyframes heroZoom {
+  from { transform: scale(1.04); }
+  to { transform: scale(1.10); }
+}
+
+.animate-hero-zoom {
+  animation: heroZoom 20s ease-in-out infinite alternate;
+}
+

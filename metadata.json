@@ -1,0 +1,6 @@
+{
+  "name": "The Venetian Garden",
+  "description": "Lucknow's premium wedding lawn, banquet hall, and luxury event venue featuring classical roman visual aesthetics, lush green spaces, and world-class hospitality.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
