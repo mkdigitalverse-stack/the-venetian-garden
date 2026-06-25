@@ -1,5 +1,5 @@
 // @ts-ignore
-import regeneratedImageLawns from "./assets/images/regenerated_image_1781420341704.jpg";
+import regeneratedImageLawn1 from "./assets/images/regenerated_image_1782320123968.jpg";
 // @ts-ignore
 import regeneratedImageLawn2 from "./assets/images/regenerated_image_1781420487647.jpg";
 // @ts-ignore
@@ -110,7 +110,7 @@ export const lawnsData: LawnItem[] = [
     capacity: "1,000 – 6,000 Guests",
     desc: "Our signature and largest lawn domain adjacent to Janeshwar Mishra Park, designed for grand monumental Indian weddings, high-end celebrity nights, and majestic elite blockbusters.", 
     features: ["Grand Indian Weddings", "State Banquets", "Live Concerts & Festivals", "Mega Receptions"], 
-    img: regeneratedImageLawns,
+    img: regeneratedImageLawn1,
     details: [
       "Colossal 1 lakh sq. ft. of continuous manicured grass area",
       "Perfect for premium stage & German Hanger installations",

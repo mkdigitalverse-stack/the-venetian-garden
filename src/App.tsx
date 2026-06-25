@@ -160,11 +160,14 @@ export default function App() {
   const [activeFAQIndex, setActiveFAQIndex] = useState<number | null>(null);
 
   // Inquiry form states
-  const [inquiryName, setInquiryName] = useState("");
+  const [inquiryFirstName, setInquiryFirstName] = useState("");
+  const [inquiryLastName, setInquiryLastName] = useState("");
   const [inquiryPhone, setInquiryPhone] = useState("");
+  const [inquiryEmail, setInquiryEmail] = useState("");
   const [inquiryDate, setInquiryDate] = useState("");
   const [inquiryGuestCount, setInquiryGuestCount] = useState("500");
   const [inquiryVenue, setInquiryVenue] = useState("Shivansh Lawn");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [savedInquiries, setSavedInquiries] = useState<any[]>([]);
   const [showInquiriesDrawer, setShowInquiriesDrawer] = useState(false);
@@ -182,13 +185,20 @@ export default function App() {
   }, []);
 
   const handleInquirySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inquiryName || !inquiryPhone) return;
+    // We do NOT call e.preventDefault() so standard HTML form submit can target the hidden iframe!
+    if (!inquiryLastName || !inquiryPhone) {
+      e.preventDefault();
+      return;
+    }
 
+    setIsSubmitting(true);
+
+    const fullName = `${inquiryFirstName} ${inquiryLastName}`.trim();
     const newInquiry = {
       id: Date.now(),
-      name: inquiryName,
+      name: fullName,
       phone: inquiryPhone,
+      email: inquiryEmail || "Not Provided",
       date: inquiryDate || "Not Decided",
       guestCount: inquiryGuestCount,
       venue: inquiryVenue,
@@ -209,11 +219,15 @@ export default function App() {
     }
 
     setIsSubmitted(true);
-    // Auto reset submission alert after 4 seconds
+    setIsSubmitting(false);
+
+    // Auto reset submission alert after 4.5 seconds
     setTimeout(() => {
       setIsSubmitted(false);
-      setInquiryName("");
+      setInquiryFirstName("");
+      setInquiryLastName("");
       setInquiryPhone("");
+      setInquiryEmail("");
       setInquiryDate("");
     }, 4500);
   };
@@ -479,6 +493,7 @@ export default function App() {
             src={regeneratedHeroImage} 
             alt="The Venetian Garden Lucknow Venue Setting" 
             className="w-full h-full object-fit object-cover animate-hero-zoom filter brightness-95"
+            referrerPolicy="no-referrer"
           />
           <div className="absolute inset-0 premium-gradient-overlay"></div>
         </div>
@@ -820,6 +835,7 @@ export default function App() {
                       src={lawn.img} 
                       alt={lawn.name} 
                       className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                      referrerPolicy="no-referrer"
                     />
                     <div className="absolute top-4 right-4 bg-wine text-gold-light py-1 px-3 text-[11px] font-bold rounded shadow-md border border-gold/20">
                       {lawn.area}
@@ -1050,6 +1066,7 @@ export default function App() {
                   alt={item.title || "The Venetian Garden View"}
                   className="w-full h-full object-cover transform scale-100 group-hover:scale-110 transition-transform duration-500"
                   loading="lazy"
+                  referrerPolicy="no-referrer"
                 />
                 
                 {/* Gradient shade overlays */}
@@ -1184,26 +1201,71 @@ export default function App() {
                       ✓ Inquiry Submitted Successfully!
                     </h4>
                     <p className="text-xs text-blush leading-relaxed">
-                      Thank you, <span className="text-white font-bold">{inquiryName}</span>. Your request has been securely logged. Our lead catering director is preparing customized layouts and will ring you shortly on <span className="text-white font-bold">{inquiryPhone}</span>.
+                      Thank you, <span className="text-white font-bold">{inquiryFirstName} {inquiryLastName}</span>. Your request has been securely logged. Our lead catering director is preparing customized layouts and will ring you shortly on <span className="text-white font-bold">{inquiryPhone}</span>.
                     </p>
                     <p className="text-[10px] text-gold/60">
                       You can trace, manage, or clear this checklist record inside "My Enquiries".
                     </p>
                   </div>
                 ) : (
-                  <form onSubmit={handleInquirySubmit} className="space-y-4 relative z-10">
-                    <div>
-                      <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
-                        Full Name *
-                      </label>
-                      <input 
-                        type="text" 
-                        required
-                        value={inquiryName}
-                        onChange={(e) => setInquiryName(e.target.value)}
-                        placeholder="e.g. Ramesh Chandra Malhotra" 
-                        className="w-full text-sm p-3.5 bg-black/30 border border-gold/40 focus:border-gold rounded-lg text-white placeholder-gray-400 outline-none transition-all"
-                      />
+                  <form 
+                    id="webform1217390000000692010" 
+                    action="https://crm.zoho.in/crm/WebToContactForm" 
+                    name="WebToContacts1217390000000692010" 
+                    method="POST" 
+                    target="zoho_submit_iframe"
+                    onSubmit={handleInquirySubmit} 
+                    className="space-y-4 relative z-10"
+                    acceptCharset="UTF-8"
+                  >
+                    {/* Zoho CRM Required Hidden Fields */}
+                    <input type="text" style={{ display: 'none' }} name="xnQsjsdp" value="0b0c8522cf16d3fc3fc967ad9c869d7fc301db716176b02545e8a2f0c02a0ce0" readOnly />
+                    <input type="hidden" name="zc_gad" id="zc_gad" value="" />
+                    <input type="text" style={{ display: 'none' }} name="xmIwtLD" value="888ea3ac01ee364d28cc8e044ba30b2b4b1b358f83d03459391470919c76fba7e7b920d3d0420806e285e090c8ef657f" readOnly />
+                    <input type="text" style={{ display: 'none' }} name="actionType" value="Q29udGFjdHM=" readOnly />
+                    <input type="text" style={{ display: 'none' }} name="returnURL" value="https://thevenetiangarden.in/" readOnly />
+                    <input type="text" style={{ display: 'none' }} name="aG9uZXlwb3Q" value="" readOnly />
+
+                    {/* Hidden Description carrying celebration parameters */}
+                    <textarea 
+                      name="Description" 
+                      id="Description" 
+                      style={{ display: 'none' }}
+                      value={`Proposed Celebration Date: ${inquiryDate || "Not Decided"}\nPreferred Segment: ${inquiryVenue}\nEstimated Guest Count: ${inquiryGuestCount}\nInquirer Email: ${inquiryEmail || "Not Provided"}`}
+                      readOnly
+                    />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
+                          First Name
+                        </label>
+                        <input 
+                          type="text" 
+                          name="First Name"
+                          id="First_Name"
+                          value={inquiryFirstName}
+                          onChange={(e) => setInquiryFirstName(e.target.value)}
+                          placeholder="e.g. Ramesh" 
+                          className="w-full text-sm p-3.5 bg-black/30 border border-gold/40 focus:border-gold rounded-lg text-white placeholder-gray-400 outline-none transition-all"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
+                          Last Name *
+                        </label>
+                        <input 
+                          type="text" 
+                          required
+                          name="Last Name"
+                          id="Last_Name"
+                          value={inquiryLastName}
+                          onChange={(e) => setInquiryLastName(e.target.value)}
+                          placeholder="e.g. Malhotra" 
+                          className="w-full text-sm p-3.5 bg-black/30 border border-gold/40 focus:border-gold rounded-lg text-white placeholder-gray-400 outline-none transition-all"
+                        />
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1214,6 +1276,8 @@ export default function App() {
                         <input 
                           type="tel" 
                           required
+                          name="Mobile"
+                          id="Mobile"
                           value={inquiryPhone}
                           onChange={(e) => setInquiryPhone(e.target.value)}
                           placeholder="e.g. +91 98765 43210" 
@@ -1221,6 +1285,21 @@ export default function App() {
                         />
                       </div>
 
+                      <div>
+                        <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
+                          Email Address
+                        </label>
+                        <input 
+                          type="email" 
+                          value={inquiryEmail}
+                          onChange={(e) => setInquiryEmail(e.target.value)}
+                          placeholder="e.g. name@example.com" 
+                          className="w-full text-sm p-3.5 bg-black/30 border border-gold/40 focus:border-gold rounded-lg text-white placeholder-gray-400 outline-none transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
                           Proposed Celebration Date
@@ -1232,9 +1311,7 @@ export default function App() {
                           className="w-full text-sm p-3.5 bg-black/30 border border-gold/40 focus:border-gold rounded-lg text-white placeholder-gray-400 outline-none transition-all"
                         />
                       </div>
-                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
                           Preferred Segment
@@ -1253,33 +1330,42 @@ export default function App() {
                           <option value="Gen Z" className="bg-wine-deep text-gold-light font-medium">Gen Z (Boutique Open-Air)</option>
                         </select>
                       </div>
+                    </div>
 
-                      <div>
-                        <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
-                          Estimated Guest Weight
-                        </label>
-                        <select 
-                          value={inquiryGuestCount}
-                          onChange={(e) => setInquiryGuestCount(e.target.value)}
-                          className="w-full text-sm p-3.5 bg-wine-deep border border-gold/40 focus:border-gold focus:ring-2 focus:ring-gold/40 rounded-lg text-gold outline-none transition-all cursor-pointer font-bold"
-                        >
-                          <option value="Under 200" className="bg-wine-deep text-gold-light font-medium">Under 200 Guests</option>
-                          <option value="200 - 500" className="bg-wine-deep text-gold-light font-medium">200 - 500 Guests</option>
-                          <option value="500 - 1500" className="bg-wine-deep text-gold-light font-medium">500 - 1,500 Guests</option>
-                          <option value="1500 - 3000" className="bg-wine-deep text-gold-light font-medium">1,500 - 3,000 Guests</option>
-                          <option value="Above 3000" className="bg-wine-deep text-gold-light font-medium">Grand Celebrity (3000+ Guests)</option>
-                        </select>
-                      </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
+                        Estimated Guest Weight
+                      </label>
+                      <select 
+                        value={inquiryGuestCount}
+                        onChange={(e) => setInquiryGuestCount(e.target.value)}
+                        className="w-full text-sm p-3.5 bg-wine-deep border border-gold/40 focus:border-gold focus:ring-2 focus:ring-gold/40 rounded-lg text-gold outline-none transition-all cursor-pointer font-bold"
+                      >
+                        <option value="Under 200" className="bg-wine-deep text-gold-light font-medium">Under 200 Guests</option>
+                        <option value="200 - 500" className="bg-wine-deep text-gold-light font-medium">200 - 500 Guests</option>
+                        <option value="500 - 1500" className="bg-wine-deep text-gold-light font-medium">500 - 1,500 Guests</option>
+                        <option value="1500 - 3000" className="bg-wine-deep text-gold-light font-medium">1,500 - 3,000 Guests</option>
+                        <option value="Above 3000" className="bg-wine-deep text-gold-light font-medium">Grand Celebrity (3000+ Guests)</option>
+                      </select>
                     </div>
 
                     <button 
                       type="submit" 
-                      className="w-full text-center py-4 bg-gold hover:bg-gold-light text-wine-deep font-bold rounded-lg shadow-lg cursor-pointer transform hover:-translate-y-0.5 transition-all mt-6 uppercase tracking-wider text-xs"
+                      disabled={isSubmitting}
+                      className="w-full text-center py-4 bg-gold hover:bg-gold-light text-wine-deep font-bold rounded-lg shadow-lg cursor-pointer transform hover:-translate-y-0.5 transition-all mt-6 uppercase tracking-wider text-xs disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Send Booking & Request Callback
+                      {isSubmitting ? "Submitting Inquiry..." : "Send Booking & Request Callback"}
                     </button>
                   </form>
                 )}
+
+                {/* Hidden iframe target for Zoho submission to prevent page reload */}
+                <iframe 
+                  name="zoho_submit_iframe" 
+                  id="zoho_submit_iframe" 
+                  className="hidden w-0 h-0 absolute pointer-events-none" 
+                  style={{ display: 'none' }}
+                />
 
               </div>
 
