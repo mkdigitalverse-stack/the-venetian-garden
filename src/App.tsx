@@ -866,7 +866,7 @@ export default function App() {
                   ✦ Government Recognition ✦
                 </span>
                 <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-wine leading-tight">
-                  Where Timeless Grandeur Meets Royal Recognition
+                  A Historic Inauguration That Marked the Beginning of Timeless Celebrations
                 </h2>
                 <p className="text-wine-dark/75 font-serif italic text-lg sm:text-xl border-l-2 border-gold pl-4 mt-2">
                   Inaugurated by Hon'ble Deputy Chief Minister of Uttar Pradesh, Shri Brajesh Pathak
