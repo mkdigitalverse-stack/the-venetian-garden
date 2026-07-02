@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import regeneratedImage from "./assets/images/regenerated_image_1781420148682.jpg";
 // @ts-ignore
 import regeneratedHeroImage from "./assets/images/regenerated_image_1781760992857.jpg";
+// @ts-ignore
+import inaugurationImage from "./assets/images/regenerated_image_1782312634284.jpg";
 import { VenetianGardenLogo } from "./components/VenetianGardenLogo";
 import { motion } from "motion/react";
 import { 
@@ -152,6 +154,16 @@ function PremiumSeparator({ light = false }: { light?: boolean }) {
   );
 }
 
+const venueOptions = [
+  { id: "Shivansh Lawn", name: "Shivansh Lawn", size: "1 Lakh Sq Ft" },
+  { id: "Sham E Awadh Lawn", name: "Sham E Awadh Lawn", size: "60,000 Sq Ft" },
+  { id: "Pine Valley Lawn", name: "Pine Valley Lawn", size: "45,000 Sq Ft" },
+  { id: "Nakshatra Banquet", name: "Nakshatra Banquet", size: "Private Ballroom" },
+  { id: "Mandapam Banquet", name: "Mandapam Banquet", size: "Main Ballroom" },
+  { id: "Bamboo Valley", name: "Bamboo Valley", size: "Botanical Reserve" },
+  { id: "Gen Z", name: "Gen Z", size: "Boutique Open-Air" },
+];
+
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [galleryCategory, setGalleryCategory] = useState("All Works");
@@ -166,11 +178,22 @@ export default function App() {
   const [inquiryEmail, setInquiryEmail] = useState("");
   const [inquiryDate, setInquiryDate] = useState("");
   const [inquiryGuestCount, setInquiryGuestCount] = useState("500");
-  const [inquiryVenue, setInquiryVenue] = useState("Shivansh Lawn");
+  const [inquiryVenues, setInquiryVenues] = useState<string[]>(["Shivansh Lawn"]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [savedInquiries, setSavedInquiries] = useState<any[]>([]);
   const [showInquiriesDrawer, setShowInquiriesDrawer] = useState(false);
+
+  // Toggle venue selection
+  const toggleVenue = (venueId: string) => {
+    setInquiryVenues(prev => {
+      if (prev.includes(venueId)) {
+        return prev.filter(v => v !== venueId);
+      } else {
+        return [...prev, venueId];
+      }
+    });
+  };
 
   // Load inquiries from localStorage
   useEffect(() => {
@@ -186,7 +209,7 @@ export default function App() {
 
   const handleInquirySubmit = (e: React.FormEvent) => {
     // We do NOT call e.preventDefault() so standard HTML form submit can target the hidden iframe!
-    if (!inquiryLastName || !inquiryPhone) {
+    if (!inquiryLastName || !inquiryPhone || inquiryVenues.length === 0) {
       e.preventDefault();
       return;
     }
@@ -201,7 +224,7 @@ export default function App() {
       email: inquiryEmail || "Not Provided",
       date: inquiryDate || "Not Decided",
       guestCount: inquiryGuestCount,
-      venue: inquiryVenue,
+      venue: inquiryVenues.join(", "),
       timestamp: new Date().toLocaleDateString("en-IN", {
         hour: "2-digit",
         minute: "2-digit",
@@ -229,6 +252,7 @@ export default function App() {
       setInquiryPhone("");
       setInquiryEmail("");
       setInquiryDate("");
+      setInquiryVenues(["Shivansh Lawn"]);
     }, 4500);
   };
 
@@ -355,6 +379,7 @@ export default function App() {
           <div className="hidden lg:flex items-center gap-1">
             <a href="#home" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Home</a>
             <a href="#heritage" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Heritage</a>
+            <a href="#inauguration" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Inauguration</a>
             <a href="#events" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Events</a>
             <a href="#advantage" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Advantage</a>
             <a href="#lawns" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Lawns</a>
@@ -424,6 +449,13 @@ export default function App() {
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Heritage
+              </a>
+              <a 
+                href="#inauguration" 
+                onClick={() => setIsMenuOpen(false)}
+                className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
+              >
+                Inauguration
               </a>
               <a 
                 href="#events" 
@@ -610,16 +642,99 @@ export default function App() {
               className="lg:col-span-7 space-y-6"
             >
               <h3 className="font-serif text-2xl font-bold text-wine leading-snug">
-                Nestled adjacent to Gomti Nagar Vistar's majestic Janeshwar Mishra Park.
+                Celebrate Beside the Iconic Janeshwar Mishra Park—One of Asia's Largest Urban Parks
               </h3>
               
               <p className="text-text-mid text-sm sm:text-base leading-relaxed">
-                The Venetian Garden is a bespoke luxury event resort architected with classical Roman columns, giant emerald meadows, and modular high-capacity indoor crystal banquets. It provides families the perfect canvas to paint landmark social chapters and grand monumental Indian weddings.
+                Situated beside the iconic <em className="font-medium text-wine-dark not-italic">Janeshwar Mishra Park</em>—recognized among <em className="italic text-wine-dark">Asia’s largest urban park destinations</em>— <em className="font-medium text-wine-dark not-italic">The Venetian Garden</em> offers a rare celebration experience where luxury, nature, and unforgettable moments come together in the heart of Lucknow.
               </p>
 
-              <p className="text-text-mid text-sm sm:text-base leading-relaxed">
-                From rich, slow-simmered Nawabi Awadhi feasts curated by traditional Khansamas to pristine global modern fine dining plates, our gourmet experiences are completely personalized to stun your guests. Our lush, manicured garden settings allow you to choose an atmosphere that represents your elevated standard.
-              </p>
+              <div className="space-y-4 text-text-mid text-sm sm:text-base leading-relaxed">
+                <p>
+                  Strategically located at <strong className="text-wine font-semibold">Gate No. 5, Janeshwar Mishra Park, Gomti Nagar Vistar</strong>, near the prestigious <strong className="text-wine font-semibold">G20 Road corridor</strong>, The Venetian Garden is designed for those who seek grand celebrations in an environment that feels both exclusive and connected.
+                </p>
+                <p>
+                  Spread across approximately <strong className="text-wine font-semibold">7 acres</strong> and embraced by nearly <strong className="text-wine font-semibold">3 km</strong> of lush natural surroundings, our destination creates a peaceful and refined atmosphere unlike conventional venues. Every celebration here is elevated by open landscapes, elegant event spaces, premium hospitality, and an ambiance that transforms occasions into timeless memories.
+                </p>
+                <p>
+                  Whether it is a luxury wedding, corporate gathering, social celebration, or private occasion, The Venetian Garden delivers experiences crafted with elegance, scale, and attention to every detail.
+                </p>
+                
+                <div className="relative bg-gradient-to-br from-white via-ivory/40 to-wine-dark/[0.02] p-6 sm:p-8 rounded-2xl border-2 border-wine/10 shadow-[0_15px_30px_rgba(114,47,55,0.03)] space-y-6 my-8 overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl -z-10"></div>
+                  <div className="absolute -left-10 -bottom-10 w-36 h-36 bg-wine/5 rounded-full blur-3xl -z-10"></div>
+                  
+                  {/* Decorative golden accent bar on left */}
+                  <div className="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-gold via-wine to-gold-light"></div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-wine/5 border border-wine/10 flex items-center justify-center shrink-0 shadow-[0_4px_10px_rgba(114,47,55,0.05)]">
+                      <Compass className="w-6 h-6 text-gold animate-spin-slow" />
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-gold uppercase tracking-widest block">✦ PROXIMITY HIGHLIGHTS ✦</span>
+                      <h4 className="font-serif text-wine-dark font-bold text-base sm:text-lg leading-snug">
+                        Perfectly Positioned Within Lucknow’s Most Elite & Connected Zone
+                      </h4>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    {/* Radius Group 1 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 border-b border-wine/10 pb-2">
+                        <MapPin className="w-4 h-4 text-gold shrink-0" />
+                        <div className="font-serif text-sm font-bold text-wine tracking-wide">Within Approximately 3 KM</div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          { name: "Taj Hotel", desc: "Luxury Stay" },
+                          { name: "Gomti Nagar Station", desc: "Rapid Transit" },
+                          { name: "Ekana Stadium", desc: "Sports Hub" },
+                          { name: "Palacio Mall", desc: "Premium Retail" },
+                          { name: "Lulu Mall", desc: "Mega Shopping" },
+                          { name: "Shaheed Path", desc: "Express Link" }
+                        ].map((item, index) => (
+                          <div key={index} className="flex flex-col p-2.5 rounded-lg bg-wine-dark/[0.02] border border-wine/5 hover:border-gold/30 hover:bg-white hover:shadow-md transition-all duration-300">
+                            <span className="text-xs font-semibold text-wine-dark">{item.name}</span>
+                            <span className="text-[9px] text-text-mid font-mono mt-0.5">{item.desc}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Radius Group 2 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 border-b border-wine/10 pb-2">
+                        <MapPin className="w-4 h-4 text-gold shrink-0" />
+                        <div className="font-serif text-sm font-bold text-wine tracking-wide">Within Approximately 5 KM</div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 gap-2">
+                        {[
+                          { name: "Hazratganj", desc: "Lucknow's Iconic Heritage Heart & Business Center" }
+                        ].map((item, index) => (
+                          <div key={index} className="flex flex-col p-3 rounded-lg bg-wine-dark/[0.02] border border-wine/5 hover:border-gold/30 hover:bg-white hover:shadow-md transition-all duration-300">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-semibold text-wine-dark">{item.name}</span>
+                              <span className="text-[10px] text-gold font-bold font-serif italic">City Landmark</span>
+                            </div>
+                            <span className="text-[10px] text-text-mid mt-1 leading-relaxed">{item.desc}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p>
+                  Blending exceptional accessibility with the serenity of nature, The Venetian Garden stands as more than a venue—it is a destination where celebrations feel extraordinary and memories remain timeless.
+                </p>
+                <p className="font-serif italic font-semibold text-wine text-base sm:text-lg border-t border-wine/10 pt-4 mt-4">
+                  “Where Luxury Celebrations Become Timeless Memories.”
+                </p>
+              </div>
 
               {/* Grid properties */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4">
@@ -696,6 +811,104 @@ export default function App() {
             </motion.div>
           </div>
 
+        </div>
+      </section>
+
+      {/* DEPUTY CM INAUGURATION SECTION */}
+      <section id="inauguration" className="py-24 bg-white text-text-dark relative overflow-hidden border-t border-wine/10">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-wine-dark/5 rounded-full blur-3xl -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl -z-10"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left Column: Image with exquisite decorative frame */}
+            <motion.div 
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.9, ease: "easeOut" }}
+              className="lg:col-span-5 relative order-2 lg:order-1"
+            >
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-ivory group/inauguration duration-500">
+                <img 
+                  src={inaugurationImage} 
+                  alt="Hon'ble Deputy Chief Minister Shri Brajesh Pathak inaugurating The Venetian Garden" 
+                  className="w-full h-[450px] object-cover transition-transform duration-700 group-hover/inauguration:scale-103"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-wine-deep/95 via-transparent to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white text-center">
+                  <p className="font-serif italic text-gold text-base mb-1">
+                    “A monumental contribution to Lucknow's landscape of luxury hospitality.”
+                  </p>
+                  <p className="text-[11px] text-ivory/80 uppercase tracking-widest font-semibold">
+                    Hon'ble Deputy CM • Shri Brajesh Pathak
+                  </p>
+                </div>
+              </div>
+              
+              {/* Outer classic geometric borders for premium aesthetic */}
+              <div className="absolute -bottom-4 -right-4 w-24 h-24 border-r-4 border-b-4 border-gold rounded-br-2xl -z-10"></div>
+              <div className="absolute -top-4 -left-4 w-24 h-24 border-l-4 border-t-4 border-gold rounded-tl-2xl -z-10"></div>
+            </motion.div>
+            
+            {/* Right Column: Content */}
+            <motion.div 
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.9, ease: "easeOut" }}
+              className="lg:col-span-7 space-y-6 order-1 lg:order-2"
+            >
+              <div className="space-y-2">
+                <span className="text-xs font-semibold text-gold tracking-widest uppercase block">
+                  ✦ Government Recognition ✦
+                </span>
+                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-wine leading-tight">
+                  Where Timeless Grandeur Meets Royal Recognition
+                </h2>
+                <p className="text-wine-dark/75 font-serif italic text-lg sm:text-xl border-l-2 border-gold pl-4 mt-2">
+                  Inaugurated by Hon'ble Deputy Chief Minister of Uttar Pradesh, Shri Brajesh Pathak
+                </p>
+              </div>
+
+              <div className="space-y-4 text-text-mid text-sm sm:text-base leading-relaxed">
+                <p>
+                  The Venetian Garden commenced its journey of unmatched elite celebrations with a magnificent inauguration ceremony graced by the <strong className="text-wine-dark font-semibold">Hon'ble Deputy Chief Minister of Uttar Pradesh, Shri Brajesh Pathak</strong>. This distinguished milestone marked the official opening of Lucknow’s most anticipated luxury resort destination.
+                </p>
+                <p>
+                  During the event, the Hon'ble Deputy CM expressed great appreciation for the resort’s architectural marvel, highlighting how the classical Roman colonnades, grand structures, and massive 7-acre emerald landscape represent a monumental contribution to the state's destination hospitality sector.
+                </p>
+                <p>
+                  Perfectly positioned adjacent to the landmark <strong className="text-wine font-semibold">Gate No. 5, Janeshwar Mishra Park</strong>, this high-profile inauguration solidifies The Venetian Garden as the premier destination for landmark social chapters, majestic Indian weddings, and prominent corporate conclaves in the region.
+                </p>
+              </div>
+
+              {/* Highlighting metrics or features */}
+              <div className="grid grid-cols-2 gap-4 border-t border-wine/10 pt-6 mt-6">
+                <div className="flex gap-3">
+                  <div className="w-10 h-10 rounded-full bg-wine/5 flex items-center justify-center shrink-0">
+                    <Award className="w-5 h-5 text-gold" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif font-bold text-wine text-sm sm:text-base">Royal Endorsement</h4>
+                    <p className="text-xs text-text-mid mt-0.5">Praised by state leadership for setting new benchmarks in hospitality.</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="w-10 h-10 rounded-full bg-wine/5 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-5 h-5 text-gold" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif font-bold text-wine text-sm sm:text-base">Prestigious Canvas</h4>
+                    <p className="text-xs text-text-mid mt-0.5">Lucknow's premier 7-acre arena crafted for grand celebrations.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
         </div>
       </section>
 
@@ -1231,7 +1444,7 @@ export default function App() {
                       name="Description" 
                       id="Description" 
                       style={{ display: 'none' }}
-                      value={`Proposed Celebration Date: ${inquiryDate || "Not Decided"}\nPreferred Segment: ${inquiryVenue}\nEstimated Guest Count: ${inquiryGuestCount}\nInquirer Email: ${inquiryEmail || "Not Provided"}`}
+                      value={`Proposed Celebration Date: ${inquiryDate || "Not Decided"}\nPreferred Segments: ${inquiryVenues.join(", ")}\nEstimated Guest Count: ${inquiryGuestCount}\nInquirer Email: ${inquiryEmail || "Not Provided"}`}
                       readOnly
                     />
 
@@ -1314,39 +1527,56 @@ export default function App() {
 
                       <div>
                         <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
-                          Preferred Segment
+                          Estimated Guest Weight
                         </label>
                         <select 
-                          value={inquiryVenue}
-                          onChange={(e) => setInquiryVenue(e.target.value)}
-                          className="w-full text-sm p-3.5 bg-wine-deep border border-gold/40 focus:border-gold focus:ring-2 focus:ring-gold/40 rounded-lg text-gold outline-none transition-all cursor-pointer font-bold"
+                          value={inquiryGuestCount}
+                          onChange={(e) => setInquiryGuestCount(e.target.value)}
+                          className="w-full text-sm p-3.5 bg-wine-deep border border-gold/40 focus:border-gold focus:ring-2 focus:ring-gold/40 rounded-lg text-gold outline-none transition-all cursor-pointer font-bold animate-none"
                         >
-                          <option value="Shivansh Lawn" className="bg-wine-deep text-gold-light font-medium">Shivansh Lawn (1 Lakh Sq Ft)</option>
-                          <option value="Sham E Awadh Lawn" className="bg-wine-deep text-gold-light font-medium">Sham E Awadh Lawn (60,000 Sq Ft)</option>
-                          <option value="Pine Valley Lawn" className="bg-wine-deep text-gold-light font-medium">Pine Valley Lawn (45,000 Sq Ft)</option>
-                          <option value="Nakshatra Banquet" className="bg-wine-deep text-gold-light font-medium">Nakshatra Banquet (Private Ballroom)</option>
-                          <option value="Mandapam Banquet" className="bg-wine-deep text-gold-light font-medium">Mandapam Banquet (Main Ballroom)</option>
-                          <option value="Bamboo Valley" className="bg-wine-deep text-gold-light font-medium">Bamboo Valley (Botanical Reserve)</option>
-                          <option value="Gen Z" className="bg-wine-deep text-gold-light font-medium">Gen Z (Boutique Open-Air)</option>
+                          <option value="Under 200" className="bg-wine-deep text-gold-light font-medium">Under 200 Guests</option>
+                          <option value="200 - 500" className="bg-wine-deep text-gold-light font-medium">200 - 500 Guests</option>
+                          <option value="500 - 1500" className="bg-wine-deep text-gold-light font-medium">500 - 1,500 Guests</option>
+                          <option value="1500 - 3000" className="bg-wine-deep text-gold-light font-medium">1,500 - 3,000 Guests</option>
+                          <option value="Above 3000" className="bg-wine-deep text-gold-light font-medium">Grand Celebrity (3000+ Guests)</option>
                         </select>
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
-                        Estimated Guest Weight
+                      <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-2">
+                        Preferred Segments (Select Multiple Venues) *
                       </label>
-                      <select 
-                        value={inquiryGuestCount}
-                        onChange={(e) => setInquiryGuestCount(e.target.value)}
-                        className="w-full text-sm p-3.5 bg-wine-deep border border-gold/40 focus:border-gold focus:ring-2 focus:ring-gold/40 rounded-lg text-gold outline-none transition-all cursor-pointer font-bold"
-                      >
-                        <option value="Under 200" className="bg-wine-deep text-gold-light font-medium">Under 200 Guests</option>
-                        <option value="200 - 500" className="bg-wine-deep text-gold-light font-medium">200 - 500 Guests</option>
-                        <option value="500 - 1500" className="bg-wine-deep text-gold-light font-medium">500 - 1,500 Guests</option>
-                        <option value="1500 - 3000" className="bg-wine-deep text-gold-light font-medium">1,500 - 3,000 Guests</option>
-                        <option value="Above 3000" className="bg-wine-deep text-gold-light font-medium">Grand Celebrity (3000+ Guests)</option>
-                      </select>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[220px] overflow-y-auto p-2 border border-gold/30 rounded-lg bg-black/20">
+                        {venueOptions.map((venue) => {
+                          const isSelected = inquiryVenues.includes(venue.id);
+                          return (
+                            <button
+                              key={venue.id}
+                              type="button"
+                              onClick={() => toggleVenue(venue.id)}
+                              className={`flex items-center justify-between text-left p-3 rounded-lg border transition-all cursor-pointer ${
+                                isSelected 
+                                  ? "bg-gold/15 border-gold text-gold font-bold shadow-[0_0_10px_rgba(201,168,76,0.1)]" 
+                                  : "bg-black/10 border-gold/15 text-ivory/70 hover:border-gold/30 hover:text-white"
+                              }`}
+                            >
+                              <div className="flex flex-col">
+                                <span className="font-semibold text-xs">{venue.name}</span>
+                                <span className="text-[9px] opacity-75 font-mono">{venue.size}</span>
+                              </div>
+                              <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all shrink-0 ${
+                                isSelected ? "border-gold bg-gold text-wine-deep" : "border-gold/30 bg-black/20"
+                              }`}>
+                                {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {inquiryVenues.length === 0 && (
+                        <p className="text-[10px] text-red-400 mt-1">Please select at least one preferred segment.</p>
+                      )}
                     </div>
 
                     <button 
@@ -1614,6 +1844,12 @@ export default function App() {
                   <a href="#heritage" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Our Heritage</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#inauguration" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                    <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
+                    <span>Resort Inauguration</span>
                   </a>
                 </li>
                 <li>
