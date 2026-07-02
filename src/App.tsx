@@ -181,8 +181,6 @@ export default function App() {
   const [inquiryVenues, setInquiryVenues] = useState<string[]>(["Shivansh Lawn"]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [savedInquiries, setSavedInquiries] = useState<any[]>([]);
-  const [showInquiriesDrawer, setShowInquiriesDrawer] = useState(false);
 
   // Toggle venue selection
   const toggleVenue = (venueId: string) => {
@@ -195,18 +193,6 @@ export default function App() {
     });
   };
 
-  // Load inquiries from localStorage
-  useEffect(() => {
-    try {
-      const existing = localStorage.getItem("venetian_garden_inquiries");
-      if (existing) {
-        setSavedInquiries(JSON.parse(existing));
-      }
-    } catch (e) {
-      console.error("Local storage reading error", e);
-    }
-  }, []);
-
   const handleInquirySubmit = (e: React.FormEvent) => {
     // We do NOT call e.preventDefault() so standard HTML form submit can target the hidden iframe!
     if (!inquiryLastName || !inquiryPhone || inquiryVenues.length === 0) {
@@ -215,31 +201,6 @@ export default function App() {
     }
 
     setIsSubmitting(true);
-
-    const fullName = `${inquiryFirstName} ${inquiryLastName}`.trim();
-    const newInquiry = {
-      id: Date.now(),
-      name: fullName,
-      phone: inquiryPhone,
-      email: inquiryEmail || "Not Provided",
-      date: inquiryDate || "Not Decided",
-      guestCount: inquiryGuestCount,
-      venue: inquiryVenues.join(", "),
-      timestamp: new Date().toLocaleDateString("en-IN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        day: "numeric",
-        month: "short"
-      })
-    };
-
-    const updated = [newInquiry, ...savedInquiries];
-    setSavedInquiries(updated);
-    try {
-      localStorage.setItem("venetian_garden_inquiries", JSON.stringify(updated));
-    } catch (err) {
-      console.error("Local storage save error", err);
-    }
 
     setIsSubmitted(true);
     setIsSubmitting(false);
@@ -254,16 +215,6 @@ export default function App() {
       setInquiryDate("");
       setInquiryVenues(["Shivansh Lawn"]);
     }, 4500);
-  };
-
-  const deleteInquiry = (id: number) => {
-    const filtered = savedInquiries.filter(item => item.id !== id);
-    setSavedInquiries(filtered);
-    try {
-      localStorage.setItem("venetian_garden_inquiries", JSON.stringify(filtered));
-    } catch (err) {
-      console.error(err);
-    }
   };
 
   const downloadBrochure = (e: React.MouseEvent) => {
@@ -394,33 +345,10 @@ export default function App() {
               <Download className="w-3.5 h-3.5" />
               Brochure
             </button>
-
-            {savedInquiries.length > 0 && (
-              <button 
-                onClick={() => setShowInquiriesDrawer(true)}
-                className="ml-2 text-xs font-semibold text-white px-3 py-2 bg-amber-700/80 hover:bg-amber-600 rounded-md transition-all flex items-center gap-1 relative"
-              >
-                <Compass className="w-3.5 h-3.5" />
-                My Enquiries
-                <span className="absolute -top-1.5 -right-1.5 bg-gold text-wine-deep rounded-full w-5 h-5 flex items-center justify-center font-bold text-[10px]">
-                  {savedInquiries.length}
-                </span>
-              </button>
-            )}
           </div>
 
           {/* Hamburger Menu Toggle Button */}
           <div className="flex items-center gap-2 lg:hidden">
-            {savedInquiries.length > 0 && (
-              <button 
-                onClick={() => setShowInquiriesDrawer(true)}
-                className="text-xs font-semibold text-white p-2 bg-amber-700/80 rounded-md transition-all flex items-center justify-center"
-                title="View Saved Enquiries"
-              >
-                <Compass className="w-4 h-4" />
-              </button>
-            )}
-
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-gold-light hover:text-white p-1"
@@ -1386,18 +1314,6 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-
-                {savedInquiries.length > 0 && (
-                  <div className="pt-4 border-t border-gray-200">
-                    <button 
-                      onClick={() => setShowInquiriesDrawer(true)} 
-                      className="text-xs font-bold text-wine hover:text-gold flex items-center gap-1 hover:underline"
-                    >
-                      <Compass className="w-4 h-4" />
-                      View my saved inquiries list ({savedInquiries.length}) &rarr;
-                    </button>
-                  </div>
-                )}
               </div>
 
               {/* Callback Form Layout */}
@@ -1928,104 +1844,7 @@ export default function App() {
         </div>
       </footer>
 
-      {/* DOCK DRAWER DIALOG FOR VIEWING INQUIRIES LIST (The Persistent Client-Side Verification Layer) */}
-      {showInquiriesDrawer && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex justify-end z-[120]">
-          <div className="w-full max-w-lg bg-white h-screen overflow-y-auto shadow-2xl flex flex-col justify-between">
-            
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-wine text-white">
-              <div className="flex items-center gap-2">
-                <VenetianGardenLogo className="w-8 h-8" />
-                <div>
-                  <h3 className="font-serif font-bold text-base">Your Tour Scheduling Records</h3>
-                  <p className="text-[10px] text-gold-light tracking-wide uppercase">Stored on your client browser</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setShowInquiriesDrawer(false)}
-                className="p-1 hover:bg-wine-dark rounded text-gold-light"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
 
-            <div className="p-6 flex-1 space-y-4 overflow-y-auto">
-              <p className="text-[11px] text-text-mid bg-beige/30 p-3 rounded border border-[#e5dec9] leading-relaxed">
-                You have recorded the following callback inquiries and tour dates with Venetian Garden. Clear or review them at your preference.
-              </p>
-
-              {savedInquiries.length === 0 ? (
-                <div className="text-center py-12 space-y-2">
-                  <span className="text-4xl">📭</span>
-                  <p className="text-sm font-bold text-gray-400">No scheduled inquiries yet</p>
-                  <p className="text-xs text-gray-400 max-w-xs mx-auto">
-                    Fill the Callback form on our website to record and trace your reservation records.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {savedInquiries.map((item) => (
-                    <div key={item.id} className="bg-[#FAF8F4] border border-gold/20 rounded-xl p-4 space-y-3 relative">
-                      <button 
-                        onClick={() => deleteInquiry(item.id)}
-                        className="absolute top-3 right-3 text-gray-400 hover:text-red-700 p-1"
-                        title="Remove record"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-gold"></span>
-                        <h4 className="font-serif font-bold text-wine-dark text-sm">{item.name}</h4>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3 text-xs text-text-mid font-medium bg-white p-3 rounded-lg border border-gray-100">
-                        <div>
-                          <span className="text-[10px] text-gray-400 block">📞 Contact</span>
-                          <span>{item.phone}</span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] text-gray-400 block">📅 Proposed Date</span>
-                          <span className="text-bold text-wine">{item.date}</span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] text-gray-400 block">📍 Target Segment</span>
-                          <span>{item.venue}</span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] text-gray-400 block">👥 Guests Weight</span>
-                          <span>{item.guestCount}</span>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-between items-center text-[10px] text-gray-400 pt-1">
-                        <span>Submitted on: {item.timestamp}</span>
-                        <span className="text-green-700 font-bold">&#9679; Pending callback support</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="p-6 border-t border-gray-100 bg-gray-50 flex flex-col gap-3">
-              <a 
-                href="tel:+919044951919"
-                className="w-full text-center py-3 bg-wine hover:bg-gold text-gold-light hover:text-wine-deep font-bold rounded-lg text-xs tracking-wider transition-all"
-              >
-                📞 Direct Ring Concierge
-              </a>
-              <button 
-                onClick={() => setShowInquiriesDrawer(false)}
-                className="w-full text-center py-2 text-xs font-semibold text-gray-500 hover:text-charcoal"
-              >
-                Close list Review
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
 
     </div>
   );
