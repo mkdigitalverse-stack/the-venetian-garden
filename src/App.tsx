@@ -660,74 +660,6 @@ export default function App() {
                   Whether it is a luxury wedding, corporate gathering, social celebration, or private occasion, The Venetian Garden delivers experiences crafted with elegance, scale, and attention to every detail.
                 </p>
                 
-                <div className="relative bg-gradient-to-br from-white via-ivory/40 to-wine-dark/[0.02] p-6 sm:p-8 rounded-2xl border-2 border-wine/10 shadow-[0_15px_30px_rgba(114,47,55,0.03)] space-y-6 my-8 overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl -z-10"></div>
-                  <div className="absolute -left-10 -bottom-10 w-36 h-36 bg-wine/5 rounded-full blur-3xl -z-10"></div>
-                  
-                  {/* Decorative golden accent bar on left */}
-                  <div className="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-gold via-wine to-gold-light"></div>
-                  
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-wine/5 border border-wine/10 flex items-center justify-center shrink-0 shadow-[0_4px_10px_rgba(114,47,55,0.05)]">
-                      <Compass className="w-6 h-6 text-gold animate-spin-slow" />
-                    </div>
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-bold text-gold uppercase tracking-widest block">✦ PROXIMITY HIGHLIGHTS ✦</span>
-                      <h4 className="font-serif text-wine-dark font-bold text-base sm:text-lg leading-snug">
-                        Perfectly Positioned Within Lucknow’s Most Elite & Connected Zone
-                      </h4>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-                    {/* Radius Group 1 */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 border-b border-wine/10 pb-2">
-                        <MapPin className="w-4 h-4 text-gold shrink-0" />
-                        <div className="font-serif text-sm font-bold text-wine tracking-wide">Within Approximately 3 KM</div>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { name: "Taj Hotel", desc: "Luxury Stay" },
-                          { name: "Gomti Nagar Station", desc: "Rapid Transit" },
-                          { name: "Ekana Stadium", desc: "Sports Hub" },
-                          { name: "Palacio Mall", desc: "Premium Retail" },
-                          { name: "Lulu Mall", desc: "Mega Shopping" },
-                          { name: "Shaheed Path", desc: "Express Link" }
-                        ].map((item, index) => (
-                          <div key={index} className="flex flex-col p-2.5 rounded-lg bg-wine-dark/[0.02] border border-wine/5 hover:border-gold/30 hover:bg-white hover:shadow-md transition-all duration-300">
-                            <span className="text-xs font-semibold text-wine-dark">{item.name}</span>
-                            <span className="text-[9px] text-text-mid font-mono mt-0.5">{item.desc}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Radius Group 2 */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 border-b border-wine/10 pb-2">
-                        <MapPin className="w-4 h-4 text-gold shrink-0" />
-                        <div className="font-serif text-sm font-bold text-wine tracking-wide">Within Approximately 5 KM</div>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 gap-2">
-                        {[
-                          { name: "Hazratganj", desc: "Lucknow's Iconic Heritage Heart & Business Center" }
-                        ].map((item, index) => (
-                          <div key={index} className="flex flex-col p-3 rounded-lg bg-wine-dark/[0.02] border border-wine/5 hover:border-gold/30 hover:bg-white hover:shadow-md transition-all duration-300">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-semibold text-wine-dark">{item.name}</span>
-                              <span className="text-[10px] text-gold font-bold font-serif italic">City Landmark</span>
-                            </div>
-                            <span className="text-[10px] text-text-mid mt-1 leading-relaxed">{item.desc}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <p>
                   Blending exceptional accessibility with the serenity of nature, The Venetian Garden stands as more than a venue—it is a destination where celebrations feel extraordinary and memories remain timeless.
                 </p>
@@ -781,34 +713,108 @@ export default function App() {
               </div>
             </motion.div>
 
-            {/* Right Showcase Banner card */}
-            <motion.div 
-              initial={{ opacity: 0, x: 50, scale: 0.95 }}
-              whileInView={{ opacity: 1, x: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
-              className="lg:col-span-5 relative"
-            >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white group/image duration-500">
-                <img 
-                  src={regeneratedImage} 
-                  alt="The Venetian Garden upscale wedding reception setting" 
-                  className="w-full h-[380px] object-cover transition-transform duration-700 group-hover/image:scale-105"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-wine-deep/90 via-transparent to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white text-center">
-                  <p className="italic text-blush font-serif text-sm sm:text-base leading-relaxed mb-1">
-                    “An emerald floral paradise lined under beautiful classical structures, creating monumental family history.”
-                  </p>
-                  <p className="text-[10px] text-gold uppercase tracking-widest font-semibold">
-                    The Venetian Vision
-                  </p>
+            {/* Right Showcase Column (Image + Proximity Highlights) */}
+            <div className="lg:col-span-5 space-y-6 flex flex-col justify-start">
+              {/* Showcase Banner Card */}
+              <motion.div 
+                initial={{ opacity: 0, x: 50, scale: 0.95 }}
+                whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
+                className="relative"
+              >
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white group/image duration-500">
+                  <img 
+                    src={regeneratedImage} 
+                    alt="The Venetian Garden upscale wedding reception setting" 
+                    className="w-full h-[320px] sm:h-[350px] object-cover transition-transform duration-700 group-hover/image:scale-105"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-wine-deep/90 via-transparent to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-5 text-white text-center">
+                    <p className="italic text-blush font-serif text-xs sm:text-sm leading-relaxed mb-1">
+                      “An emerald floral paradise lined under beautiful classical structures, creating monumental family history.”
+                    </p>
+                    <p className="text-[9px] text-gold uppercase tracking-widest font-semibold">
+                      The Venetian Vision
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="absolute -bottom-4 -left-4 w-24 h-24 border-l-4 border-b-4 border-gold/40 rounded-bl-2xl -z-10"></div>
-              <div className="absolute -top-4 -right-4 w-24 h-24 border-r-4 border-t-4 border-gold/40 rounded-tr-2xl -z-10"></div>
-            </motion.div>
+                <div className="absolute -bottom-3 -left-3 w-16 h-16 border-l-4 border-b-4 border-gold/40 rounded-bl-2xl -z-10"></div>
+                <div className="absolute -top-3 -right-3 w-16 h-16 border-r-4 border-t-4 border-gold/40 rounded-tr-2xl -z-10"></div>
+              </motion.div>
+
+              {/* Proximity Highlights Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+                className="relative bg-gradient-to-br from-white via-ivory/50 to-wine-dark/[0.01] p-5 sm:p-6 rounded-2xl border-2 border-wine/10 shadow-[0_15px_30px_rgba(114,47,55,0.03)] space-y-4 overflow-hidden group"
+              >
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl -z-10"></div>
+                <div className="absolute -left-10 -bottom-10 w-36 h-36 bg-wine/5 rounded-full blur-3xl -z-10"></div>
+                
+                {/* Decorative golden accent bar on left */}
+                <div className="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-gold via-wine to-gold-light"></div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-wine/5 border border-wine/10 flex items-center justify-center shrink-0 shadow-[0_4px_8px_rgba(114,47,55,0.04)]">
+                    <Compass className="w-5 h-5 text-gold animate-spin-slow" />
+                  </div>
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] font-bold text-gold uppercase tracking-widest block">✦ PROXIMITY HIGHLIGHTS ✦</span>
+                    <h4 className="font-serif text-wine-dark font-bold text-sm sm:text-base leading-snug">
+                      Perfectly Positioned Within Lucknow’s Most Elite Zone
+                    </h4>
+                  </div>
+                </div>
+
+                <div className="space-y-3.5 pt-1">
+                  {/* Radius Group 1 */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5 border-b border-wine/5 pb-1">
+                      <MapPin className="w-3.5 h-3.5 text-gold shrink-0" />
+                      <div className="font-serif text-[11px] font-bold text-wine tracking-wide uppercase">Within Approx. 3 KM</div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {[
+                        { name: "Taj Hotel", desc: "Luxury Stay" },
+                        { name: "Gomti Nagar Station", desc: "Rapid Transit" },
+                        { name: "Ekana Stadium", desc: "Sports Hub" },
+                        { name: "Palacio Mall", desc: "Premium Retail" },
+                        { name: "Lulu Mall", desc: "Mega Shopping" },
+                        { name: "Shaheed Path", desc: "Express Link" }
+                      ].map((item, index) => (
+                        <div key={index} className="flex flex-col p-1.5 px-2 rounded-lg bg-wine-dark/[0.02] border border-wine/5 hover:border-gold/30 hover:bg-white hover:shadow-sm transition-all duration-300">
+                          <span className="text-[10px] font-semibold text-wine-dark leading-tight">{item.name}</span>
+                          <span className="text-[8px] text-text-mid font-mono mt-0.5 leading-none">{item.desc}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Radius Group 2 */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5 border-b border-wine/5 pb-1">
+                      <MapPin className="w-3.5 h-3.5 text-gold shrink-0" />
+                      <div className="font-serif text-[11px] font-bold text-wine tracking-wide uppercase">Within Approx. 5 KM</div>
+                    </div>
+                    
+                    <div className="flex flex-col p-2 rounded-lg bg-wine-dark/[0.02] border border-wine/5 hover:border-gold/30 hover:bg-white hover:shadow-sm transition-all duration-300">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-semibold text-wine-dark">Hazratganj</span>
+                        <span className="text-[8px] text-gold font-bold font-serif italic">City Landmark</span>
+                      </div>
+                      <span className="text-[9px] text-text-mid mt-0.5 leading-relaxed">
+                        Lucknow's Iconic Heritage Heart & Business Center
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </div>
 
         </div>
