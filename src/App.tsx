@@ -6,6 +6,7 @@ import regeneratedHeroImage from "./assets/images/regenerated_image_178176099285
 // @ts-ignore
 import inaugurationImage from "./assets/images/regenerated_image_1782312634284.jpg";
 import { VenetianGardenLogo } from "./components/VenetianGardenLogo";
+import { ContactPage } from "./components/ContactPage";
 import { motion } from "motion/react";
 import { 
   Phone, 
@@ -177,10 +178,55 @@ export default function App() {
   const [inquiryPhone, setInquiryPhone] = useState("");
   const [inquiryEmail, setInquiryEmail] = useState("");
   const [inquiryDate, setInquiryDate] = useState("");
-  const [inquiryGuestCount, setInquiryGuestCount] = useState("500");
+  const [inquiryGuestCount, setInquiryGuestCount] = useState("");
   const [inquiryVenues, setInquiryVenues] = useState<string[]>(["Shivansh Lawn"]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Separate Contact page routing state
+  const [currentPage, setCurrentPage] = useState<"home" | "contact">("home");
+
+  useEffect(() => {
+    const handleRouting = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      
+      if (path === "/contact" || path === "/contact/" || hash === "#contact" || hash === "#/contact") {
+        setCurrentPage("contact");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        setCurrentPage("home");
+        if (hash && hash !== "#home") {
+          setTimeout(() => {
+            const targetEl = document.getElementById(hash.substring(1));
+            if (targetEl) {
+              targetEl.scrollIntoView({ behavior: "smooth" });
+            }
+          }, 100);
+        }
+      }
+    };
+
+    handleRouting();
+    window.addEventListener("popstate", handleRouting);
+    window.addEventListener("hashchange", handleRouting);
+    return () => {
+      window.removeEventListener("popstate", handleRouting);
+      window.removeEventListener("hashchange", handleRouting);
+    };
+  }, []);
+
+  // Load Zoho CRM Analytics Tracking code dynamically
+  useEffect(() => {
+    const existingScript = document.getElementById("wf_anal");
+    if (!existingScript) {
+      const script = document.createElement("script");
+      script.id = "wf_anal";
+      script.src = "https://crm.zohopublic.in/crm/WebFormAnalyticsServeServlet?rid=43c9efb3ab04109a04ae54036117d4adab775baf2790b44f1de168f7b06bc184093d14a3e9b14da6d2c183dbfd6d2f41gid033b54fb57eaa7d433c4b99bd73d3c95a9cf59e4ebc0f5a4258f9376f972b229gid16eb2179b00d447556396d894dd2d105a60c10c22b8a80279d034c2507f5236cgida6824a120d4c00734295e51dda9c84173b30e00ef675aec4d1bcfd9f69df87c2&tw=c04ab0ff9bcc081fcf6081a9599fe2fda972ce15f78dcef6f64ae5a34968aea8";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
 
   // Toggle venue selection
   const toggleVenue = (venueId: string) => {
@@ -194,16 +240,53 @@ export default function App() {
   };
 
   const handleInquirySubmit = (e: React.FormEvent) => {
-    // We do NOT call e.preventDefault() so standard HTML form submit can target the hidden iframe!
-    if (!inquiryLastName || !inquiryPhone || inquiryVenues.length === 0) {
+    // We validate last name is not empty
+    if (!inquiryLastName) {
+      alert("Last Name cannot be empty.");
       e.preventDefault();
       return;
     }
 
-    setIsSubmitting(true);
+    // Email validation matching checkMandatory
+    if (inquiryEmail.trim().length !== 0) {
+      const atpos = inquiryEmail.indexOf('@');
+      const dotpos = inquiryEmail.lastIndexOf('.');
+      if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= inquiryEmail.length) {
+        alert('Please enter a valid email address.');
+        e.preventDefault();
+        return;
+      }
+    }
 
+    if (inquiryVenues.length === 0) {
+      alert("Please select at least one Venue.");
+      e.preventDefault();
+      return;
+    }
+
+    // Handle Zoho smarturl service parameters dynamically
+    const urlparams = new URLSearchParams(window.location.search);
+    if (urlparams.has('service') && urlparams.get('service') === 'smarturl') {
+      const webform = document.getElementById('webform1361941000000535132');
+      if (webform) {
+        const service = urlparams.get('service') || '';
+        let smarturlfield = webform.querySelector('input[name="service"]');
+        if (!smarturlfield) {
+          smarturlfield = document.createElement('input');
+          smarturlfield.setAttribute('type', 'hidden');
+          smarturlfield.setAttribute('name', 'service');
+          webform.appendChild(smarturlfield);
+        }
+        smarturlfield.setAttribute('value', service);
+      }
+    }
+
+    setIsSubmitting(true);
     setIsSubmitted(true);
-    setIsSubmitting(false);
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 1000);
 
     // Auto reset submission alert after 4.5 seconds
     setTimeout(() => {
@@ -213,6 +296,7 @@ export default function App() {
       setInquiryPhone("");
       setInquiryEmail("");
       setInquiryDate("");
+      setInquiryGuestCount("");
       setInquiryVenues(["Shivansh Lawn"]);
     }, 4500);
   };
@@ -244,6 +328,32 @@ export default function App() {
   };
   const prevTestimonial = () => {
     setTestimonialIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
+
+  const navigateToHome = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    setCurrentPage("home");
+    window.history.pushState({ page: "home" }, "", "/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const navigateToContact = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    setCurrentPage("contact");
+    window.history.pushState({ page: "contact" }, "", "/contact");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSectionClick = (hash: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    setCurrentPage("home");
+    window.history.pushState({ page: "home" }, "", `/${hash}`);
+    setTimeout(() => {
+      const targetEl = document.getElementById(hash.substring(1));
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
   };
 
   return (
@@ -314,7 +424,7 @@ export default function App() {
         {/* SOLID LUXURY MENU BAR / MAIN NAVIGATION BAR */}
         <nav className="bg-wine-deep border-b border-gold/20 py-3 transition-all duration-300">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <a href="#home" className="flex items-center gap-3 group transition-all">
+          <a href="/" onClick={navigateToHome} className="flex items-center gap-3 group transition-all">
             <VenetianGardenLogo className="h-10 w-10 md:h-12 md:w-12 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6" />
             <div className="transition-transform duration-500 group-hover:scale-105 origin-left">
               <span className="font-serif text-lg md:text-xl font-bold text-ivory tracking-tight block transition-colors duration-300 group-hover:text-gold group-hover:drop-shadow-[0_0_8px_rgba(201,168,76,0.6)]">
@@ -328,15 +438,15 @@ export default function App() {
 
           {/* Desktop Nav links */}
           <div className="hidden lg:flex items-center gap-1">
-            <a href="#home" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Home</a>
-            <a href="#heritage" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Heritage</a>
-            <a href="#inauguration" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Inauguration</a>
-            <a href="#events" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Events</a>
-            <a href="#advantage" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Advantage</a>
-            <a href="#lawns" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Lawns</a>
-            <a href="#testimonials" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Testimonials</a>
-            <a href="#gallery" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Gallery</a>
-            <a href="#contact" className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Contact</a>
+            <a href="/" onClick={navigateToHome} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Home</a>
+            <a href="#heritage" onClick={handleSectionClick('#heritage')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Heritage</a>
+            <a href="#inauguration" onClick={handleSectionClick('#inauguration')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Inauguration</a>
+            <a href="#events" onClick={handleSectionClick('#events')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Events</a>
+            <a href="#advantage" onClick={handleSectionClick('#advantage')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Advantage</a>
+            <a href="#lawns" onClick={handleSectionClick('#lawns')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Lawns</a>
+            <a href="#testimonials" onClick={handleSectionClick('#testimonials')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Testimonials</a>
+            <a href="#gallery" onClick={handleSectionClick('#gallery')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Gallery</a>
+            <a href="/contact" onClick={navigateToContact} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Contact</a>
             
             <button 
               onClick={downloadBrochure}
@@ -365,64 +475,64 @@ export default function App() {
           <div className="lg:hidden absolute top-full left-0 right-0 bg-wine-deep border-b border-gold/30 shadow-2xl z-[90]">
             <div className="px-4 pt-2 pb-6 space-y-3">
               <a 
-                href="#home" 
-                onClick={() => setIsMenuOpen(false)}
+                href="/" 
+                onClick={(e) => { navigateToHome(e); setIsMenuOpen(false); }}
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Home
               </a>
               <a 
                 href="#heritage" 
-                onClick={() => setIsMenuOpen(false)}
+                onClick={(e) => { handleSectionClick('#heritage')(e); setIsMenuOpen(false); }}
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Heritage
               </a>
               <a 
                 href="#inauguration" 
-                onClick={() => setIsMenuOpen(false)}
+                onClick={(e) => { handleSectionClick('#inauguration')(e); setIsMenuOpen(false); }}
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Inauguration
               </a>
               <a 
                 href="#events" 
-                onClick={() => setIsMenuOpen(false)}
+                onClick={(e) => { handleSectionClick('#events')(e); setIsMenuOpen(false); }}
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Events
               </a>
               <a 
                 href="#advantage" 
-                onClick={() => setIsMenuOpen(false)}
+                onClick={(e) => { handleSectionClick('#advantage')(e); setIsMenuOpen(false); }}
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Advantage
               </a>
               <a 
                 href="#lawns" 
-                onClick={() => setIsMenuOpen(false)}
+                onClick={(e) => { handleSectionClick('#lawns')(e); setIsMenuOpen(false); }}
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Lawns
               </a>
               <a 
                 href="#testimonials" 
-                onClick={() => setIsMenuOpen(false)}
+                onClick={(e) => { handleSectionClick('#testimonials')(e); setIsMenuOpen(false); }}
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Testimonials
               </a>
               <a 
                 href="#gallery" 
-                onClick={() => setIsMenuOpen(false)}
+                onClick={(e) => { handleSectionClick('#gallery')(e); setIsMenuOpen(false); }}
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Gallery
               </a>
               <a 
-                href="#contact" 
-                onClick={() => setIsMenuOpen(false)}
+                href="/contact" 
+                onClick={(e) => { navigateToContact(e); setIsMenuOpen(false); }}
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Contact
@@ -446,7 +556,9 @@ export default function App() {
       {/* BACKGROUND FLOATER INTERACTION WINDOW */}
       <FloatingActions />
 
-      {/* HERO SECTION */}
+      {currentPage === "home" ? (
+        <>
+          {/* HERO SECTION */}
       <section id="home" className="relative min-h-[85vh] lg:h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
@@ -1232,300 +1344,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* REQUEST CALLBACK FORM SECTION */}
-      <section id="contact" className="py-20 bg-white text-text-dark">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-[#FAF8F5] border border-gold/20 rounded-3xl p-8 md:p-12 lg:p-16 shadow-xl relative overflow-hidden">
-            
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">
-              
-              {/* Info Column */}
-              <div className="lg:col-span-6 space-y-8">
-                <div>
-                  <span className="text-xs font-semibold text-wine tracking-widest uppercase block mb-2">
-                    ✦ LET'S HOST YOUR CELEBRATION ✦
-                  </span>
-                  <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-wine-dark leading-tight">
-                    Let's Plan Your <br />
-                    <span className="italic font-normal">Perfect Event</span>
-                  </h2>
-                  <div className="h-1 w-16 bg-gold mt-4"></div>
-                </div>
 
-                <div className="space-y-6">
-                  {/* Address Grid */}
-                  <div className="flex gap-4 items-start">
-                    <div className="p-3 bg-wine/5 rounded-lg text-wine shrink-0">
-                      <MapPin className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-serif font-bold text-wine text-sm uppercase tracking-wider mb-1">
-                        Venue Location
-                      </h4>
-                      <p className="text-text-mid text-sm leading-relaxed">
-                        Near G20 Underpass, Gate No. 5, Janeshwar Mishra Park,<br />Gomti Nagar Vistar, Lucknow, UP - 226010
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Operational Hours */}
-                  <div className="flex gap-4 items-start">
-                    <div className="p-3 bg-wine/5 rounded-lg text-wine shrink-0">
-                      <Clock className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-serif font-bold text-wine text-sm uppercase tracking-wider mb-1">
-                        Lawn Touring Hours
-                      </h4>
-                      <p className="text-text-mid text-sm">
-                        Daily: 09:30 AM – 08:30 PM &middot; Guided Tour Services
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Hotlines */}
-                  <div className="flex gap-4 items-start">
-                    <div className="p-3 bg-wine/5 rounded-lg text-wine shrink-0">
-                      <Phone className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-serif font-bold text-wine text-sm uppercase tracking-wider mb-1">
-                        Concierge Hotlines
-                      </h4>
-                      <p className="text-text-mid text-sm space-y-1">
-                        <span className="block">📞 Call: <a href="tel:+919044951919" className="text-wine font-semibold hover:underline">+91 90449 51919</a></span>
-                        <span className="block">📞 Call: <a href="tel:+919026352450" className="text-wine font-semibold hover:underline">+91 90263 52450</a></span>
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Emails */}
-                  <div className="flex gap-4 items-start">
-                    <div className="p-3 bg-wine/5 rounded-lg text-wine shrink-0">
-                      <Mail className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-serif font-bold text-wine text-sm uppercase tracking-wider mb-1">
-                        Official Correspondence
-                      </h4>
-                      <p className="text-text-mid text-sm">
-                        ✉️ <a href="mailto:thevenetiangarden3@gmail.com" className="text-wine hover:underline">thevenetiangarden3@gmail.com</a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Callback Form Layout */}
-              <div className="lg:col-span-6 bg-wine-deep border border-gold/30 rounded-2xl p-8 relative shadow-2xl">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(201,168,76,0.1),transparent_35%)] rounded-2xl"></div>
-                
-                <h3 className="font-serif text-2xl font-bold text-gold-light mb-2 relative z-10">
-                  Request a Dedicated Callback
-                </h3>
-                <p className="text-xs text-blush/80 mb-6 relative z-10">
-                  Fill details below. Our events manager will revert in 2 hours with customized lawn prices and options.
-                </p>
-
-                {isSubmitted ? (
-                  <div className="bg-wine-dark/70 border-2 border-gold rounded-xl p-8 text-center space-y-4 animate-fade-in relative z-10">
-                    <div className="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mx-auto">
-                      <Check className="w-8 h-8 text-gold" />
-                    </div>
-                    <h4 className="font-serif text-xl font-bold text-gold">
-                      ✓ Inquiry Submitted Successfully!
-                    </h4>
-                    <p className="text-xs text-blush leading-relaxed">
-                      Thank you, <span className="text-white font-bold">{inquiryFirstName} {inquiryLastName}</span>. Your request has been securely logged. Our lead catering director is preparing customized layouts and will ring you shortly on <span className="text-white font-bold">{inquiryPhone}</span>.
-                    </p>
-                    <p className="text-[10px] text-gold/60">
-                      You can trace, manage, or clear this checklist record inside "My Enquiries".
-                    </p>
-                  </div>
-                ) : (
-                  <form 
-                    id="webform1217390000000692010" 
-                    action="https://crm.zoho.in/crm/WebToContactForm" 
-                    name="WebToContacts1217390000000692010" 
-                    method="POST" 
-                    target="zoho_submit_iframe"
-                    onSubmit={handleInquirySubmit} 
-                    className="space-y-4 relative z-10"
-                    acceptCharset="UTF-8"
-                  >
-                    {/* Zoho CRM Required Hidden Fields */}
-                    <input type="text" style={{ display: 'none' }} name="xnQsjsdp" value="0b0c8522cf16d3fc3fc967ad9c869d7fc301db716176b02545e8a2f0c02a0ce0" readOnly />
-                    <input type="hidden" name="zc_gad" id="zc_gad" value="" />
-                    <input type="text" style={{ display: 'none' }} name="xmIwtLD" value="888ea3ac01ee364d28cc8e044ba30b2b4b1b358f83d03459391470919c76fba7e7b920d3d0420806e285e090c8ef657f" readOnly />
-                    <input type="text" style={{ display: 'none' }} name="actionType" value="Q29udGFjdHM=" readOnly />
-                    <input type="text" style={{ display: 'none' }} name="returnURL" value="https://thevenetiangarden.in/" readOnly />
-                    <input type="text" style={{ display: 'none' }} name="aG9uZXlwb3Q" value="" readOnly />
-
-                    {/* Hidden Description carrying celebration parameters */}
-                    <textarea 
-                      name="Description" 
-                      id="Description" 
-                      style={{ display: 'none' }}
-                      value={`Proposed Celebration Date: ${inquiryDate || "Not Decided"}\nPreferred Segments: ${inquiryVenues.join(", ")}\nEstimated Guest Count: ${inquiryGuestCount}\nInquirer Email: ${inquiryEmail || "Not Provided"}`}
-                      readOnly
-                    />
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
-                          First Name
-                        </label>
-                        <input 
-                          type="text" 
-                          name="First Name"
-                          id="First_Name"
-                          value={inquiryFirstName}
-                          onChange={(e) => setInquiryFirstName(e.target.value)}
-                          placeholder="e.g. Ramesh" 
-                          className="w-full text-sm p-3.5 bg-black/30 border border-gold/40 focus:border-gold rounded-lg text-white placeholder-gray-400 outline-none transition-all"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
-                          Last Name *
-                        </label>
-                        <input 
-                          type="text" 
-                          required
-                          name="Last Name"
-                          id="Last_Name"
-                          value={inquiryLastName}
-                          onChange={(e) => setInquiryLastName(e.target.value)}
-                          placeholder="e.g. Malhotra" 
-                          className="w-full text-sm p-3.5 bg-black/30 border border-gold/40 focus:border-gold rounded-lg text-white placeholder-gray-400 outline-none transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
-                          Mobile Number *
-                        </label>
-                        <input 
-                          type="tel" 
-                          required
-                          name="Mobile"
-                          id="Mobile"
-                          value={inquiryPhone}
-                          onChange={(e) => setInquiryPhone(e.target.value)}
-                          placeholder="e.g. +91 98765 43210" 
-                          className="w-full text-sm p-3.5 bg-black/30 border border-gold/40 focus:border-gold rounded-lg text-white placeholder-gray-400 outline-none transition-all"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
-                          Email Address
-                        </label>
-                        <input 
-                          type="email" 
-                          value={inquiryEmail}
-                          onChange={(e) => setInquiryEmail(e.target.value)}
-                          placeholder="e.g. name@example.com" 
-                          className="w-full text-sm p-3.5 bg-black/30 border border-gold/40 focus:border-gold rounded-lg text-white placeholder-gray-400 outline-none transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
-                          Proposed Celebration Date
-                        </label>
-                        <input 
-                          type="date" 
-                          value={inquiryDate}
-                          onChange={(e) => setInquiryDate(e.target.value)}
-                          className="w-full text-sm p-3.5 bg-black/30 border border-gold/40 focus:border-gold rounded-lg text-white placeholder-gray-400 outline-none transition-all"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-1">
-                          Estimated Guest Weight
-                        </label>
-                        <select 
-                          value={inquiryGuestCount}
-                          onChange={(e) => setInquiryGuestCount(e.target.value)}
-                          className="w-full text-sm p-3.5 bg-wine-deep border border-gold/40 focus:border-gold focus:ring-2 focus:ring-gold/40 rounded-lg text-gold outline-none transition-all cursor-pointer font-bold animate-none"
-                        >
-                          <option value="Under 200" className="bg-wine-deep text-gold-light font-medium">Under 200 Guests</option>
-                          <option value="200 - 500" className="bg-wine-deep text-gold-light font-medium">200 - 500 Guests</option>
-                          <option value="500 - 1500" className="bg-wine-deep text-gold-light font-medium">500 - 1,500 Guests</option>
-                          <option value="1500 - 3000" className="bg-wine-deep text-gold-light font-medium">1,500 - 3,000 Guests</option>
-                          <option value="Above 3000" className="bg-wine-deep text-gold-light font-medium">Grand Celebrity (3000+ Guests)</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-bold text-gold uppercase tracking-wider mb-2">
-                        Preferred Segments (Select Multiple Venues) *
-                      </label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[220px] overflow-y-auto p-2 border border-gold/30 rounded-lg bg-black/20">
-                        {venueOptions.map((venue) => {
-                          const isSelected = inquiryVenues.includes(venue.id);
-                          return (
-                            <button
-                              key={venue.id}
-                              type="button"
-                              onClick={() => toggleVenue(venue.id)}
-                              className={`flex items-center justify-between text-left p-3 rounded-lg border transition-all cursor-pointer ${
-                                isSelected 
-                                  ? "bg-gold/15 border-gold text-gold font-bold shadow-[0_0_10px_rgba(201,168,76,0.1)]" 
-                                  : "bg-black/10 border-gold/15 text-ivory/70 hover:border-gold/30 hover:text-white"
-                              }`}
-                            >
-                              <div className="flex flex-col">
-                                <span className="font-semibold text-xs">{venue.name}</span>
-                                <span className="text-[9px] opacity-75 font-mono">{venue.size}</span>
-                              </div>
-                              <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all shrink-0 ${
-                                isSelected ? "border-gold bg-gold text-wine-deep" : "border-gold/30 bg-black/20"
-                              }`}>
-                                {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                      {inquiryVenues.length === 0 && (
-                        <p className="text-[10px] text-red-400 mt-1">Please select at least one preferred segment.</p>
-                      )}
-                    </div>
-
-                    <button 
-                      type="submit" 
-                      disabled={isSubmitting}
-                      className="w-full text-center py-4 bg-gold hover:bg-gold-light text-wine-deep font-bold rounded-lg shadow-lg cursor-pointer transform hover:-translate-y-0.5 transition-all mt-6 uppercase tracking-wider text-xs disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isSubmitting ? "Submitting Inquiry..." : "Send Booking & Request Callback"}
-                    </button>
-                  </form>
-                )}
-
-                {/* Hidden iframe target for Zoho submission to prevent page reload */}
-                <iframe 
-                  name="zoho_submit_iframe" 
-                  id="zoho_submit_iframe" 
-                  className="hidden w-0 h-0 absolute pointer-events-none" 
-                  style={{ display: 'none' }}
-                />
-
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-      </section>
 
       {/* FREQUENTLY ASKED QUESTIONS SECTION */}
       <section id="faq" className="py-20 bg-ivory text-text-dark border-t border-gray-200">
@@ -1630,6 +1449,10 @@ export default function App() {
           </div>
         </div>
       </section>
+        </>
+      ) : (
+        <ContactPage onBackToHome={navigateToHome} />
+      )}
 
       {/* COMPREHENSIVE FOOTER */}
       <footer className="bg-charcoal text-white pt-16 pb-8 border-t border-gold/30">
@@ -1757,55 +1580,55 @@ export default function App() {
               </h4>
               <ul className="space-y-3 text-xs text-gold/80 font-light">
                 <li>
-                  <a href="#home" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                  <a href="/" onClick={navigateToHome} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Home Banner</span>
                   </a>
                 </li>
                 <li>
-                  <a href="#heritage" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                  <a href="#heritage" onClick={handleSectionClick('#heritage')} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Our Heritage</span>
                   </a>
                 </li>
                 <li>
-                  <a href="#inauguration" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                  <a href="#inauguration" onClick={handleSectionClick('#inauguration')} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Resort Inauguration</span>
                   </a>
                 </li>
                 <li>
-                  <a href="#events" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                  <a href="#events" onClick={handleSectionClick('#events')} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Celebrated Events</span>
                   </a>
                 </li>
                 <li>
-                  <a href="#advantage" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                  <a href="#advantage" onClick={handleSectionClick('#advantage')} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Premium Advantages</span>
                   </a>
                 </li>
                 <li>
-                  <a href="#lawns" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                  <a href="#lawns" onClick={handleSectionClick('#lawns')} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Lawn Master Map</span>
                   </a>
                 </li>
                 <li>
-                  <a href="#testimonials" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                  <a href="#testimonials" onClick={handleSectionClick('#testimonials')} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Guest Testimonials</span>
                   </a>
                 </li>
                 <li>
-                  <a href="#gallery" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                  <a href="#gallery" onClick={handleSectionClick('#gallery')} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Photo Chronicle</span>
                   </a>
                 </li>
                 <li>
-                  <a href="#contact" className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                  <a href="/contact" onClick={navigateToContact} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Request Tour Checklist</span>
                   </a>
