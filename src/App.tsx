@@ -904,6 +904,28 @@ export default function App() {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl -z-10"></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* Section Header: Spanning full width above both columns */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-center max-w-4xl mx-auto mb-16"
+          >
+            <span className="text-xs font-semibold text-gold tracking-widest uppercase block mb-3">
+              ✦ Government Recognition ✦
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-wine leading-tight">
+              A Historic Inauguration That Marked the Beginning of Timeless Celebrations
+            </h2>
+            <div className="flex justify-center mt-4">
+              <p className="text-wine-dark/75 font-serif italic text-lg sm:text-xl border-l-2 border-gold pl-4 text-left">
+                Inaugurated by Hon'ble Deputy Chief Minister of Uttar Pradesh, Shri Brajesh Pathak
+              </p>
+            </div>
+          </motion.div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Column: Image with exquisite decorative frame */}
@@ -945,18 +967,6 @@ export default function App() {
               transition={{ duration: 0.9, ease: "easeOut" }}
               className="lg:col-span-7 space-y-6 order-1 lg:order-2"
             >
-              <div className="space-y-2">
-                <span className="text-xs font-semibold text-gold tracking-widest uppercase block">
-                  ✦ Government Recognition ✦
-                </span>
-                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-wine leading-tight">
-                  A Historic Inauguration That Marked the Beginning of Timeless Celebrations
-                </h2>
-                <p className="text-wine-dark/75 font-serif italic text-lg sm:text-xl border-l-2 border-gold pl-4 mt-2">
-                  Inaugurated by Hon'ble Deputy Chief Minister of Uttar Pradesh, Shri Brajesh Pathak
-                </p>
-              </div>
-
               <div className="space-y-4 text-text-mid text-sm sm:text-base leading-relaxed">
                 <p>
                   The Venetian Garden commenced its journey of unmatched elite celebrations with a magnificent inauguration ceremony graced by the <strong className="text-wine-dark font-semibold">Hon'ble Deputy Chief Minister of Uttar Pradesh, Shri Brajesh Pathak</strong>. This distinguished milestone marked the official opening of Lucknow’s most anticipated luxury resort destination.
