@@ -6,7 +6,6 @@ import regeneratedHeroImage from "./assets/images/regenerated_image_178176099285
 // @ts-ignore
 import inaugurationImage from "./assets/images/regenerated_image_1782312634284.jpg";
 import { VenetianGardenLogo } from "./components/VenetianGardenLogo";
-import { ContactPage } from "./components/ContactPage";
 import { motion } from "motion/react";
 import { 
   Phone, 
@@ -192,8 +191,13 @@ export default function App() {
       const hash = window.location.hash;
       
       if (path === "/contact" || path === "/contact/" || hash === "#contact" || hash === "#/contact") {
-        setCurrentPage("contact");
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        setCurrentPage("home");
+        setTimeout(() => {
+          const targetEl = document.getElementById("contact");
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 150);
       } else {
         setCurrentPage("home");
         if (hash && hash !== "#home") {
@@ -225,6 +229,46 @@ export default function App() {
       script.src = "https://crm.zohopublic.in/crm/WebFormAnalyticsServeServlet?rid=43c9efb3ab04109a04ae54036117d4adab775baf2790b44f1de168f7b06bc184093d14a3e9b14da6d2c183dbfd6d2f41gid033b54fb57eaa7d433c4b99bd73d3c95a9cf59e4ebc0f5a4258f9376f972b229gid16eb2179b00d447556396d894dd2d105a60c10c22b8a80279d034c2507f5236cgida6824a120d4c00734295e51dda9c84173b30e00ef675aec4d1bcfd9f69df87c2&tw=c04ab0ff9bcc081fcf6081a9599fe2fda972ce15f78dcef6f64ae5a34968aea8";
       script.async = true;
       document.body.appendChild(script);
+    }
+  }, []);
+
+  // Update Zoho iframe with referrerName query param dynamically to ensure smooth attribution capture
+  useEffect(() => {
+    try {
+      const zf_frame = document.getElementById("ziframe_188412") as HTMLIFrameElement | null;
+      if (zf_frame) {
+        const targetUrl = 'https://forms.zohopublic.in/thevenetiangarden1/form/TheVenetianGarden/formperma/ngroHLCf4yoHfzl1lNrPqEqrFfuJmGLCyFrVG8fi_Aw';
+        let ifrmSrc = targetUrl;
+        
+        if (!(/[?&]referrername=/.test(ifrmSrc))) {
+          let rfr = window.location.href;
+          try {
+            rfr = window.self !== window.top ? 
+              window.top.location.href : 
+              (/^https?:\/\/[\w.-]+\.[a-zA-Z]{2,}/i.test(rfr) ? rfr : "");
+          } catch (e) {
+            rfr = window.location.href; // Fallback to current URL if access is blocked
+          }
+          
+          if (rfr && rfr !== "") {
+            if (rfr.length > 1800) {
+              const queryIndex = rfr.indexOf('?');
+              if (queryIndex > -1) {
+                rfr = rfr.substring(0, queryIndex);
+              }
+              if (rfr.length > 1800) {
+                rfr = rfr.substring(0, 1800);
+              }
+            }
+            ifrmSrc += (ifrmSrc.indexOf('?') > 0 ? '&' : '?') + 'referrername=' + encodeURIComponent(rfr);
+          }
+        }
+        if (zf_frame.src !== ifrmSrc) {
+          zf_frame.src = ifrmSrc;
+        }
+      }
+    } catch (e) {
+      console.error("Zoho Form Referrer Injection failed:", e);
     }
   }, []);
 
@@ -337,13 +381,6 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const navigateToContact = (e?: React.MouseEvent) => {
-    if (e) e.preventDefault();
-    setCurrentPage("contact");
-    window.history.pushState({ page: "contact" }, "", "/contact");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   const handleSectionClick = (hash: string) => (e: React.MouseEvent) => {
     e.preventDefault();
     setCurrentPage("home");
@@ -446,7 +483,7 @@ export default function App() {
             <a href="#lawns" onClick={handleSectionClick('#lawns')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Lawns</a>
             <a href="#testimonials" onClick={handleSectionClick('#testimonials')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Testimonials</a>
             <a href="#gallery" onClick={handleSectionClick('#gallery')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Gallery</a>
-            <a href="/contact" onClick={navigateToContact} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Contact</a>
+            <a href="#contact" onClick={handleSectionClick('#contact')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Contact</a>
             
             <button 
               onClick={downloadBrochure}
@@ -531,8 +568,8 @@ export default function App() {
                 Gallery
               </a>
               <a 
-                href="/contact" 
-                onClick={(e) => { navigateToContact(e); setIsMenuOpen(false); }}
+                href="#contact" 
+                onClick={(e) => { handleSectionClick('#contact')(e); setIsMenuOpen(false); }}
                 className="block text-base font-medium text-white/90 hover:text-gold-light py-2 border-b border-gold/10"
               >
                 Contact
@@ -556,9 +593,9 @@ export default function App() {
       {/* BACKGROUND FLOATER INTERACTION WINDOW */}
       <FloatingActions />
 
-      {currentPage === "home" ? (
-        <>
-          {/* HERO SECTION */}
+      {/* Render main home content directly */}
+      <>
+        {/* HERO SECTION */}
       <section id="home" className="relative min-h-[85vh] lg:h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
@@ -616,6 +653,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a 
               href="#contact" 
+              onClick={handleSectionClick('#contact')}
               className="w-full sm:w-auto text-center px-8 py-4 font-bold text-wine-deep bg-gold hover:bg-transparent hover:text-gold hover:border-gold border border-gold transition-all duration-500 rounded shadow-xl hover:shadow-[0_0_20px_rgba(201,168,76,0.35)] transform hover:-translate-y-1 flex items-center justify-center gap-2.5 uppercase tracking-wider text-xs cursor-pointer group"
             >
               <span>Enquire & Callback</span>
@@ -1002,6 +1040,7 @@ export default function App() {
                 </div>
                 <a 
                   href="#contact" 
+                  onClick={handleSectionClick('#contact')}
                   className="inline-flex items-center gap-2 text-xs font-semibold text-gold-light group-hover:text-gold transition-colors"
                 >
                   <span>Enquire Setup Structure</span>
@@ -1143,6 +1182,7 @@ export default function App() {
                 <div className="px-6 pb-6 pt-2 border-t border-gray-50">
                   <a 
                     href="#contact" 
+                    onClick={handleSectionClick('#contact')}
                     className="w-full text-center py-2.5 bg-wine hover:bg-gold hover:text-wine-deep text-gold-light text-xs font-semibold rounded block transition-all duration-300 border border-gold/30 shadow-sm"
                   >
                     Schedule Private Lawn Tour →
@@ -1393,6 +1433,134 @@ export default function App() {
         </div>
       </section>
 
+      {/* EMBEDDED ZOHO CONTACT SECTION */}
+      <section id="contact" className="relative py-20 bg-ivory border-t border-gold/30">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(201,168,76,0.05),transparent_60%)] pointer-events-none"></div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          <div className="text-center mb-6">
+            <span className="text-xs font-semibold text-gold tracking-widest uppercase block mb-3">
+              ✦ BESPOKE INQUIRIES ✦
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-wine-deep tracking-tight">
+              Connect With Us
+            </h2>
+            <div className="h-0.5 w-16 bg-gold mx-auto mt-4 mb-4"></div>
+            <p className="max-w-xl mx-auto text-xs sm:text-sm text-text-mid font-light leading-relaxed">
+              Please share your celebration details below. Our luxury concierge team will review your requirements and coordinate back with open dates and curated packages.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch mt-12">
+            
+            {/* Contact Details Column */}
+            <div className="lg:col-span-5 flex flex-col justify-between gap-6">
+              
+              {/* Address Card */}
+              <div className="bg-white/80 p-5 rounded-2xl border border-gold/15 shadow-sm flex items-start gap-4 hover:border-gold/35 transition-all duration-300">
+                <div className="w-10 h-10 rounded-full bg-wine/5 flex items-center justify-center shrink-0">
+                  <MapPin className="w-5 h-5 text-gold" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-bold text-wine-deep text-sm sm:text-base">
+                    Official Address
+                  </h3>
+                  <p className="text-xs sm:text-sm text-text-mid mt-1.5 leading-relaxed font-light">
+                    Near G20 Underpass, Gate No. 5, Janeshwar Mishra Park, Gomti Nagar Vistar, Lucknow, UP, 226010
+                  </p>
+                  <a 
+                    href="https://maps.google.com/?q=Janeshwar+Mishra+Park+Gate+No+5+Lucknow" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-block mt-2.5 text-[11px] font-semibold text-gold hover:text-wine-deep uppercase tracking-wider transition-colors"
+                  >
+                    View Map Directions →
+                  </a>
+                </div>
+              </div>
+
+              {/* Call Direct Card */}
+              <div className="bg-white/80 p-5 rounded-2xl border border-gold/15 shadow-sm flex items-start gap-4 hover:border-gold/35 transition-all duration-300">
+                <div className="w-10 h-10 rounded-full bg-wine/5 flex items-center justify-center shrink-0">
+                  <Phone className="w-5 h-5 text-gold" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-bold text-wine-deep text-sm sm:text-base">
+                    Direct Concierge Numbers
+                  </h3>
+                  <div className="mt-2 space-y-1.5">
+                    <a 
+                      href="tel:+919044951919" 
+                      className="block text-xs sm:text-sm text-text-mid hover:text-wine transition-colors font-light"
+                    >
+                      <span className="font-semibold text-wine-deep">Hotline:</span> +91 90449 51919
+                    </a>
+                    <a 
+                      href="tel:+919026352450" 
+                      className="block text-xs sm:text-sm text-text-mid hover:text-wine transition-colors font-light"
+                    >
+                      <span className="font-semibold text-wine-deep">Office:</span> +91 90263 52450
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Email Card */}
+              <div className="bg-white/80 p-5 rounded-2xl border border-gold/15 shadow-sm flex items-start gap-4 hover:border-gold/35 transition-all duration-300">
+                <div className="w-10 h-10 rounded-full bg-wine/5 flex items-center justify-center shrink-0">
+                  <Mail className="w-5 h-5 text-gold" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-bold text-wine-deep text-sm sm:text-base">
+                    Electronic Mail
+                  </h3>
+                  <p className="text-xs sm:text-sm text-text-mid mt-1.5 leading-relaxed font-light">
+                    For corporate bookings, brand partnerships, or custom catering walkthroughs:
+                  </p>
+                  <a 
+                    href="mailto:thevenetiangarden3@gmail.com" 
+                    className="inline-block mt-1 text-xs sm:text-sm text-gold hover:text-wine-deep hover:underline transition-colors font-medium"
+                  >
+                    thevenetiangarden3@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              {/* Private Tours Reminder */}
+              <div className="bg-wine-deep p-5 rounded-2xl border border-gold/20 shadow-md flex items-start gap-4 text-white">
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-5 h-5 text-gold" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-bold text-gold text-sm sm:text-base">
+                    Exquisite Private Tours
+                  </h3>
+                  <p className="text-xs text-white/85 mt-1 leading-relaxed font-light">
+                    Walk through our neoclassical pillars. Private lawn and site tours are available daily from 10:00 AM to 7:30 PM by prior appointment.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Zoho Form iframe Column */}
+            <div className="lg:col-span-7 flex flex-col justify-center">
+              <div className="bg-white p-3 sm:p-6 rounded-2xl shadow-xl border border-gold/20 backdrop-blur-sm h-full flex flex-col justify-center overflow-hidden">
+                <iframe 
+                  id="ziframe_188412"
+                  aria-label="The Venetian Garden" 
+                  frameBorder="0"     
+                  style={{ height: '520px', width: '100%', border: 'none' }} 
+                  src='https://forms.zohopublic.in/thevenetiangarden1/form/TheVenetianGarden/formperma/ngroHLCf4yoHfzl1lNrPqEqrFfuJmGLCyFrVG8fi_Aw'
+                />
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
       {/* LUXURY PREMIUM CTA SECTION */}
       <section className="relative py-24 bg-wine-deep border-t border-gold/45 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(201,168,76,0.15),transparent_75%)] pointer-events-none"></div>
@@ -1430,6 +1598,7 @@ export default function App() {
             {/* Button 2: Contact Us */}
             <a 
               href="#contact"
+              onClick={handleSectionClick('#contact')}
               className="w-full sm:w-auto px-10 py-4.5 bg-transparent text-gold hover:text-wine-deep hover:bg-gold font-bold text-sm tracking-widest uppercase rounded border-2 border-gold/40 hover:border-gold shadow-md transition-all duration-500 flex items-center justify-center gap-2.5 cursor-pointer transform hover:-translate-y-1.5 hover:scale-[1.03] active:scale-95"
             >
               <Mail className="w-4 h-4" />
@@ -1449,10 +1618,7 @@ export default function App() {
           </div>
         </div>
       </section>
-        </>
-      ) : (
-        <ContactPage onBackToHome={navigateToHome} />
-      )}
+      </>
 
       {/* COMPREHENSIVE FOOTER */}
       <footer className="bg-charcoal text-white pt-16 pb-8 border-t border-gold/30">
@@ -1628,7 +1794,7 @@ export default function App() {
                   </a>
                 </li>
                 <li>
-                  <a href="/contact" onClick={navigateToContact} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
+                  <a href="#contact" onClick={handleSectionClick('#contact')} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Request Tour Checklist</span>
                   </a>
