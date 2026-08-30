@@ -938,20 +938,10 @@ export default function App() {
             >
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-ivory group/inauguration duration-500">
                 <img 
-                  src="https://lh3.googleusercontent.com/d/1_DzZ1QHWnzb5TvX7O37pe1nUX0v_1iMu" 
+                  src={inaugurationImage} 
                   alt="Hon'ble Deputy Chief Minister Shri Brajesh Pathak inaugurating The Venetian Garden" 
                   className="w-full h-[450px] object-cover transition-transform duration-700 group-hover/inauguration:scale-103"
                   referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    const target = e.currentTarget;
-                    if (target.src.includes("lh3.googleusercontent.com")) {
-                      target.src = "https://drive.google.com/thumbnail?id=1_DzZ1QHWnzb5TvX7O37pe1nUX0v_1iMu&sz=w1200";
-                    } else if (target.src.includes("thumbnail")) {
-                      target.src = "https://drive.google.com/uc?export=view&id=1_DzZ1QHWnzb5TvX7O37pe1nUX0v_1iMu";
-                    } else {
-                      target.src = inaugurationImage;
-                    }
-                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-wine-deep/95 via-transparent to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white text-center">
