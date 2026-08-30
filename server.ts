@@ -81,33 +81,8 @@ async function startServer() {
   } else {
     // In production, server.cjs is in /dist, so __dirname is /dist
     const distPath = typeof __dirname !== "undefined" ? __dirname : path.join(process.cwd(), "dist");
-
-    // Static assets with hash in filename can be cached long-term
-    app.use(
-      "/assets",
-      express.static(path.join(distPath, "assets"), {
-        maxAge: "1y",
-        immutable: true,
-      })
-    );
-
-    // Root and other static files (especially index.html) must not be cached aggressively
-    app.use(
-      express.static(distPath, {
-        setHeaders: (res, filePath) => {
-          if (filePath.endsWith(".html")) {
-            res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            res.setHeader("Pragma", "no-cache");
-            res.setHeader("Expires", "0");
-          }
-        },
-      })
-    );
-
+    app.use(express.static(distPath));
     app.get("*", (req, res) => {
-      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-      res.setHeader("Pragma", "no-cache");
-      res.setHeader("Expires", "0");
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
