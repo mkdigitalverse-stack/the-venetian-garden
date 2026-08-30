@@ -347,7 +347,7 @@ export default function App() {
 
   const downloadBrochure = (e: React.MouseEvent) => {
     e.preventDefault();
-    window.open("https://drive.google.com/file/d/1nMaYpVmckbYFn9nq0DBM_tLpAOMhwwSQ/view", "_blank");
+    window.open("https://drive.google.com/file/d/1zqffibuwALABhy2U6kIwRvPHKDQHwLDg/view?usp=drive_link", "_blank");
   };
 
   // Filter gallery items
