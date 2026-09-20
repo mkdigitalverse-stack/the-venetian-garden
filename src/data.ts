@@ -1,7 +1,7 @@
 // @ts-ignore
 import regeneratedImageLawn1 from "./assets/images/venue_shivansh_lawn.jpg";
 // @ts-ignore
-import regeneratedImageLawn2 from "./assets/images/venue_sham_e_awadh.jpg";
+import regeneratedImageLawn2 from "./assets/images/regenerated_image_1781420487647.jpg";
 // @ts-ignore
 import regeneratedImageLawn3 from "./assets/images/venue_pine_valley.jpg";
 // @ts-ignore
