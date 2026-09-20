@@ -71,7 +71,7 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV !== "production") {
     const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -79,10 +79,11 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    // In production, server.cjs is in /dist, so __dirname is /dist
-    const distPath = typeof __dirname !== "undefined" ? __dirname : path.join(process.cwd(), "dist");
+    // In production, serve the built dist directory
+    const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
       res.sendFile(path.join(distPath, "index.html"));
     });
   }

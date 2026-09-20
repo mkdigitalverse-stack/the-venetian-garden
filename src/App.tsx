@@ -4,7 +4,7 @@ import regeneratedImage from "./assets/images/regenerated_image_1781420148682.jp
 // @ts-ignore
 import regeneratedHeroImage from "./assets/images/regenerated_image_1781760992857.jpg";
 // @ts-ignore
-import inaugurationImage from "./assets/images/regenerated_image_1782312634284.jpg";
+import inaugurationImage from "./assets/images/venue_inauguration_brajesh_pathak.jpg";
 import { VenetianGardenLogo } from "./components/VenetianGardenLogo";
 import { motion } from "motion/react";
 import { 
@@ -185,6 +185,9 @@ export default function App() {
   // Separate Contact page routing state
   const [currentPage, setCurrentPage] = useState<"home" | "contact">("home");
 
+  // Hero section background image from Google Drive
+  const [heroImageSrc, setHeroImageSrc] = useState("https://lh3.googleusercontent.com/d/1hVZ-7FTyBMOzfsdcGG1zW2WyczRcD4KN");
+
   useEffect(() => {
     const handleRouting = () => {
       const path = window.location.pathname;
@@ -345,9 +348,11 @@ export default function App() {
     }, 4500);
   };
 
-  const downloadBrochure = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.open("https://drive.google.com/file/d/1zqffibuwALABhy2U6kIwRvPHKDQHwLDg/view?usp=drive_link", "_blank");
+  const BROCHURE_URL = "https://drive.google.com/file/d/1zqffibuwALABhy2U6kIwRvPHKDQHwLDg/view?usp=drive_link";
+
+  const downloadBrochure = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    window.open(BROCHURE_URL, "_blank", "noopener,noreferrer");
   };
 
   // Filter gallery items
@@ -485,13 +490,15 @@ export default function App() {
             <a href="#gallery" onClick={handleSectionClick('#gallery')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Gallery</a>
             <a href="#contact" onClick={handleSectionClick('#contact')} className="text-sm font-medium text-ivory/90 hover:text-gold-light px-3 py-2 transition-colors">Contact</a>
             
-            <button 
-              onClick={downloadBrochure}
+            <a 
+              href={BROCHURE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="ml-4 text-xs font-semibold text-gold-light px-4 py-2 border border-gold bg-wine hover:bg-gold hover:text-wine-deep transition-all duration-300 cursor-pointer flex items-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" />
               Brochure
-            </button>
+            </a>
           </div>
 
           {/* Hamburger Menu Toggle Button */}
@@ -576,13 +583,16 @@ export default function App() {
               </a>
               
               <div className="pt-2 flex flex-col gap-2">
-                <button 
-                  onClick={(e) => { downloadBrochure(e); setIsMenuOpen(false); }}
+                <a 
+                  href={BROCHURE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsMenuOpen(false)}
                   className="w-full text-center text-sm font-semibold text-gold-light bg-wine border border-gold py-2.5 rounded hover:bg-gold hover:text-wine-deep transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
                   Download Brochure
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -599,10 +609,17 @@ export default function App() {
       <section id="home" className="relative min-h-[85vh] lg:h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src={regeneratedHeroImage} 
+            src={heroImageSrc} 
             alt="The Venetian Garden Lucknow Venue Setting" 
-            className="w-full h-full object-fit object-cover animate-hero-zoom filter brightness-95"
+            className="w-full h-full object-cover object-center animate-hero-zoom filter brightness-95"
             referrerPolicy="no-referrer"
+            onError={() => {
+              if (heroImageSrc === "https://lh3.googleusercontent.com/d/1hVZ-7FTyBMOzfsdcGG1zW2WyczRcD4KN") {
+                setHeroImageSrc("https://drive.google.com/uc?export=view&id=1hVZ-7FTyBMOzfsdcGG1zW2WyczRcD4KN");
+              } else if (heroImageSrc !== regeneratedHeroImage) {
+                setHeroImageSrc(regeneratedHeroImage);
+              }
+            }}
           />
           <div className="absolute inset-0 premium-gradient-overlay"></div>
         </div>
@@ -660,14 +677,16 @@ export default function App() {
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
             
-            <button 
-              onClick={downloadBrochure}
-              className="w-full sm:w-auto text-center px-8 py-3.5 font-semibold text-gold-light bg-transparent hover:bg-white/5 border border-gold/50 hover:border-gold transition-all duration-300 rounded flex items-center justify-center gap-2"
+            <a 
+              href={BROCHURE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto text-center px-8 py-3.5 font-semibold text-gold-light bg-transparent hover:bg-white/5 border border-gold/50 hover:border-gold transition-all duration-300 rounded flex items-center justify-center gap-2 cursor-pointer"
               id="hero-download-brochure"
             >
               <Download className="w-4 h-4" />
               <span>Download Digital Brochure</span>
-            </button>
+            </a>
           </div>
         </div>
 
@@ -1597,13 +1616,15 @@ export default function App() {
 
           <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6 mt-10">
             {/* Button 1: Download Digital Brochure with ultimate glow & scale */}
-            <button 
-              onClick={downloadBrochure}
+            <a 
+              href={BROCHURE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full sm:w-auto px-10 py-4.5 bg-gold text-wine-deep font-black text-sm tracking-widest uppercase rounded shadow-[0_10px_25px_rgba(201,168,76,0.3)] hover:shadow-[0_15px_35px_rgba(201,168,76,0.6)] hover:bg-transparent hover:text-gold border border-gold hover:border-gold transition-all duration-500 flex items-center justify-center gap-2.5 cursor-pointer transform hover:-translate-y-1.5 hover:scale-[1.03] active:scale-95 group"
             >
               <Download className="w-4 h-4 transition-transform duration-500 group-hover:translate-y-1 group-hover:scale-110" />
               <span>Download Digital Brochure</span>
-            </button>
+            </a>
 
             {/* Button 2: Contact Us */}
             <a 
@@ -1807,6 +1828,17 @@ export default function App() {
                   <a href="#contact" onClick={handleSectionClick('#contact')} className="hover:text-gold-light flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item">
                     <span className="text-[8px] text-gold opacity-0 group-hover/item:opacity-100 transition-opacity duration-300">✦</span>
                     <span>Request Tour Checklist</span>
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href={BROCHURE_URL} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-gold hover:text-white flex items-center gap-1.5 transition-all duration-300 hover:translate-x-2 group/item font-medium"
+                  >
+                    <span className="text-[8px] text-gold">✦</span>
+                    <span>Download Brochure (PDF)</span>
                   </a>
                 </li>
               </ul>

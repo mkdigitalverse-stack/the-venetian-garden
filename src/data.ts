@@ -1,17 +1,17 @@
 // @ts-ignore
-import regeneratedImageLawn1 from "./assets/images/regenerated_image_1782320123968.jpg";
+import regeneratedImageLawn1 from "./assets/images/venue_shivansh_lawn.jpg";
 // @ts-ignore
-import regeneratedImageLawn2 from "./assets/images/regenerated_image_1781420487647.jpg";
+import regeneratedImageLawn2 from "./assets/images/venue_sham_e_awadh.jpg";
 // @ts-ignore
-import regeneratedImageLawn3 from "./assets/images/regenerated_image_1781420772060.jpg";
+import regeneratedImageLawn3 from "./assets/images/venue_pine_valley.jpg";
 // @ts-ignore
-import regeneratedImageLawn4 from "./assets/images/regenerated_image_1781420915380.jpg";
+import regeneratedImageLawn4 from "./assets/images/venue_nakshatra_banquet.jpg";
 // @ts-ignore
-import regeneratedImageLawn5 from "./assets/images/regenerated_image_1781420925286.jpg";
+import regeneratedImageLawn5 from "./assets/images/venue_mandapam_ballroom.jpg";
 // @ts-ignore
-import regeneratedImageLawn6 from "./assets/images/regenerated_image_1781421170289.jpg";
+import regeneratedImageLawn6 from "./assets/images/venue_bamboo_valley.jpg";
 // @ts-ignore
-import regeneratedImageLawn7 from "./assets/images/regenerated_image_1781421310640.jpg";
+import regeneratedImageLawn7 from "./assets/images/venue_gen_z_lawn.jpg";
 // @ts-ignore
 import regeneratedImageGallery1 from "./assets/images/regenerated_image_1781422266727.jpg";
 // @ts-ignore
