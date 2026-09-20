@@ -1,9 +1,10 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const port = Number(process.env.PORT) || 3000;
 
   // Add parser middlewares
   app.use(express.json());
@@ -80,7 +81,9 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     // In production, serve the built dist directory
-    const distPath = path.join(process.cwd(), "dist");
+    const distPath = fs.existsSync(path.join(process.cwd(), "dist", "index.html"))
+      ? path.join(process.cwd(), "dist")
+      : __dirname;
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
       res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -88,8 +91,8 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  app.listen(port, "0.0.0.0", () => {
+    console.log(`Server running on http://0.0.0.0:${port}`);
   });
 }
 
